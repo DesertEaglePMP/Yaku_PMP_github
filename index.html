@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YAKU · Agua de los bofedales vista por NISAR</title>
+<meta name="author" content="Equipo HIDROTECH">
+<meta name="theme-color" content="#0d5c63">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="YAKU">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="si-disclosure" content="Code generated with assistance of Claude (Anthropic), a Super Intelligence (SI) tool; reviewed and tested by team HIDROTECH.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f4f3ef; --surface:#fcfcfb; --surface-2:#f0efec; --line:#e2e0da;
+  --text:#0b0b0b; --text-2:#52514e; --muted:#85837d;
+  --accent:#0d5c63; --accent-ink:#ffffff;
+  --water:#2a78d6; --bof:#1baf7a; --bof-dry:#a9dcc7; --puna:#e6e1d3; --lost:#eb6834;
+  --s1:#2a78d6; --s2:#1baf7a;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme: dark;
+    --bg:#121211; --surface:#1a1a19; --surface-2:#232321; --line:#30302d;
+    --text:#f0efec; --text-2:#c3c2b7; --muted:#8e8c84;
+    --accent:#5cc2c9; --accent-ink:#0b1f21;
+    --water:#3987e5; --bof:#199e70; --bof-dry:#2f5c4b; --puna:#3a3833; --lost:#d95926;
+    --s1:#3987e5; --s2:#199e70;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;margin:0;letter-spacing:-.01em}
+a{color:var(--accent)}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+button{font:inherit;cursor:pointer}
+
+header{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:18px 24px 10px;max-width:1360px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:12px}
+.logo svg{flex:none}
+.logo h1{font-size:26px;line-height:1}
+.logo p{margin:2px 0 0;color:var(--text-2);font-size:13.5px}
+.badge{margin-left:auto;font-size:12.5px;padding:5px 10px;border-radius:999px;background:var(--surface-2);color:var(--text-2);border:1px solid var(--line)}
+.badge b{color:var(--text)}
+nav{max-width:1360px;margin:0 auto;padding:0 24px;display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav a{padding:10px 14px;text-decoration:none;color:var(--text-2);font-weight:500;border-bottom:2px solid transparent;white-space:nowrap}
+nav a.on{color:var(--text);border-color:var(--accent)}
+main{max-width:1360px;margin:0 auto;padding:18px 24px 48px}
+section.view{display:none}
+section.view.on{display:block}
+
+.grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:1000px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px}
+.card h3{font-size:15px;margin-bottom:2px}
+.sub{color:var(--muted);font-size:12.5px;margin:0 0 10px}
+
+/* map */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:9px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;color:var(--text-2);padding:5px 10px;border-radius:7px;font-size:13px;font-weight:500}
+.seg button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.mapwrap{position:relative;width:100%;aspect-ratio:1/1;background:var(--surface-2);border-radius:10px;overflow:hidden;touch-action:none}
+.mapwrap canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+.swipe{position:absolute;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.35);display:none;cursor:ew-resize}
+.swipe::after{content:"⟷";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;color:#111;border-radius:50%;width:28px;height:28px;display:grid;place-items:center;font-size:14px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.maplabel{position:absolute;top:8px;padding:3px 8px;border-radius:6px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:600;pointer-events:none}
+.scalebar{position:absolute;left:10px;bottom:10px;color:#fff;font-size:11px;text-shadow:0 1px 2px #000;pointer-events:none}
+.scalebar i{display:block;height:4px;border:2px solid #fff;border-top:0;margin-bottom:2px;box-shadow:0 1px 2px rgba(0,0,0,.5)}
+.north{position:absolute;right:10px;top:8px;color:#fff;font:700 12px "Space Grotesk",Inter,system-ui,sans-serif;text-shadow:0 1px 2px #000;pointer-events:none;text-align:center;line-height:1}
+.readout{min-height:22px;font-size:12.5px;color:var(--text-2);margin-top:8px;font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--text-2);margin-top:8px;align-items:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+.ramp{display:inline-block;width:140px;height:10px;border-radius:3px;vertical-align:-1px;margin:0 6px}
+
+.timeline{display:flex;align-items:center;gap:10px;margin-top:12px}
+.play{width:38px;height:38px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);font-size:15px;flex:none}
+.timeline input[type=range]{flex:1;accent-color:var(--accent)}
+.datebig{font:700 18px "Space Grotesk",Inter,system-ui,sans-serif;min-width:118px;text-align:right;font-variant-numeric:tabular-nums}
+.ticks{display:flex;justify-content:space-between;margin:2px 48px 0 48px;font-size:11px;color:var(--muted)}
+.cmp{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--text-2)}
+select{font:inherit;font-size:13px;padding:4px 6px;border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--text)}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+.kpi .l{font-size:12px;color:var(--text-2);font-weight:500}
+.kpi .v{font:700 26px/1.15 "Space Grotesk",Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums;margin-top:2px}
+.kpi .v small{font-size:14px;font-weight:500;color:var(--text-2);margin-left:3px}
+.kpi .n{font-size:12px;color:var(--muted)}
+.story{border-left:3px solid var(--accent);padding:10px 14px;background:var(--surface);border-radius:0 12px 12px 0;margin-bottom:14px;font-size:14px;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.story b{font-variant-numeric:tabular-nums}
+.stack{display:flex;flex-direction:column;gap:14px}
+
+/* chart */
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .leg{display:flex;gap:14px;font-size:12px;color:var(--text-2);margin-bottom:4px;flex-wrap:wrap}
+.chart .leg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:3px}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);white-space:nowrap;display:none;z-index:5;font-variant-numeric:tabular-nums}
+.tip .d{font-weight:600;margin-bottom:2px}
+.tip i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+
+/* params */
+details.params summary{cursor:pointer;font-weight:600;font-family:"Space Grotesk",Inter,system-ui,sans-serif}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;margin-top:10px}
+@media (max-width:560px){.pgrid{grid-template-columns:1fr}}
+.pgrid h4{grid-column:1/-1;margin:8px 0 0;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.prm label{display:flex;justify-content:space-between;font-size:12.5px;color:var(--text-2)}
+.prm label b{color:var(--text);font-variant-numeric:tabular-nums;font-weight:600}
+.prm input{width:100%;accent-color:var(--accent)}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:500}
+.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+
+/* text views */
+.prose{max-width:860px}
+.prose h2{font-size:24px;margin:6px 0 10px}
+.prose h3{font-size:17px;margin:22px 0 6px}
+.prose p,.prose li{color:var(--text-2)}
+.prose b{color:var(--text)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.step .k{font:700 12px "Space Grotesk",Inter,system-ui,sans-serif;color:var(--accent);letter-spacing:.05em}
+.step h4{margin:4px 0;font-size:14.5px}
+.step p{margin:0;font-size:13px}
+.formula{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:ui-monospace,monospace;font-size:13px;overflow-x:auto;color:var(--text)}
+pre{background:#0f1716;color:#d8efe9;padding:12px 14px;border-radius:10px;overflow-x:auto;position:relative}
+.copy{position:absolute;top:8px;right:8px;font-size:11px;padding:3px 8px;border-radius:6px;border:0;background:#2c3c3a;color:#d8efe9}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left;white-space:nowrap}
+th{color:var(--text-2);font-weight:600;font-size:12px}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--text-2);margin:12px 0}
+.drop.over{border-color:var(--accent);background:var(--surface-2)}
+.warn{font-size:13px;color:var(--text-2);background:var(--surface-2);border-radius:10px;padding:10px 12px}
+.msg{font-size:13px;margin-top:8px;color:var(--text-2)}
+.instalar{display:none;border:0;border-radius:999px;padding:7px 14px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:13px}
+.instalar.on{display:inline-block}
+.aviso{display:none;max-width:1360px;margin:8px auto 0;padding:8px 24px;font-size:13px;color:#7a4a00;background:#fff4dc;border-bottom:1px solid #f0d9a8}
+.aviso.on{display:block}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.modal.on{display:flex}
+.modal .hoja{background:var(--surface);color:var(--text);border-radius:16px 16px 0 0;padding:20px 22px 28px;max-width:520px;width:100%}
+.modal ol{padding-left:20px;color:var(--text-2)} .modal li{margin:6px 0}
+@media (max-width:600px){
+  header{padding:12px 14px 6px;gap:10px} .logo h1{font-size:22px} .logo p{font-size:12px}
+  .badge{margin-left:0;width:100%;text-align:center}
+  nav{padding:0 10px} nav a{padding:9px 10px;font-size:14px}
+  main{padding:12px 10px 40px} .card{padding:12px;border-radius:12px}
+  .kpi .v{font-size:22px} .kpis{gap:8px}
+  .seg button{padding:5px 8px;font-size:12px} .datebig{font-size:15px;min-width:96px}
+  .ticks{margin:2px 40px} .story{font-size:13.5px}
+}
+.grid>*{min-width:0} .prose{min-width:0;overflow-wrap:anywhere} pre{white-space:pre-wrap;word-break:break-word}
+footer{max-width:1360px;margin:0 auto;padding:0 24px 30px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
+      <circle cx="22" cy="22" r="21" fill="var(--accent)"/>
+      <path d="M6 30 L15 18 L21 25 L28 13 L38 30 Z" fill="var(--accent-ink)" opacity=".9"/>
+      <path d="M22 26c-3 4-4 6-4 7.5a4 4 0 0 0 8 0c0-1.5-1-3.5-4-7.5z" fill="var(--water)" stroke="var(--accent-ink)" stroke-width="1.2"/>
+    </svg>
+    <div>
+      <h1>YAKU</h1>
+      <p>Agua de los bofedales altoandinos, medida con el radar NISAR</p>
+    </div>
+  </div>
+  <span class="badge" id="badge"></span>
+  <button class="instalar" id="btnInstalar" type="button">📲 Instalar app</button>
+</header>
+<div class="aviso" id="aviso">Sin conexión: se muestran los últimos datos guardados en el celular.</div>
+<div class="modal" id="modalIOS" role="dialog" aria-label="Instalar en iPhone">
+  <div class="hoja">
+    <h3 style="margin-bottom:8px">Instalar YAKU en iPhone o iPad</h3>
+    <ol>
+      <li>Abra esta página en <b>Safari</b>.</li>
+      <li>Toque el botón <b>Compartir</b> (cuadro con flecha hacia arriba).</li>
+      <li>Elija <b>«Agregar a pantalla de inicio»</b> y luego <b>Agregar</b>.</li>
+    </ol>
+    <button class="btn pri" id="cerrarIOS" type="button" style="margin-top:8px">Entendido</button>
+  </div>
+</div>
+<nav id="tabs">
+  <a href="#explorar" data-v="explorar">Explorar</a>
+  <a href="#metodo" data-v="metodo">Cómo funciona</a>
+  <a href="#datos" data-v="datos">Datos NISAR</a>
+  <a href="#acerca" data-v="acerca">Acerca</a>
+</nav>
+
+<main>
+<!-- ============ EXPLORAR ============ -->
+<section class="view" id="v-explorar">
+  <div class="grid">
+    <div class="card">
+      <div class="toolbar">
+        <div class="seg" id="layers">
+          <button data-l="clasif" class="on">Agua y bofedal</button>
+          <button data-l="smi">Humedad</button>
+          <button data-l="rgb">Falso color</button>
+          <button data-l="hh">HH</button>
+          <button data-l="hv">HV</button>
+        </div>
+        <label class="cmp"><input type="checkbox" id="cmpOn"> Comparar con
+          <select id="cmpDate"></select></label>
+      </div>
+      <div class="mapwrap" id="mapwrap">
+        <canvas id="map"></canvas>
+        <div class="maplabel" id="labA" style="left:8px"></div>
+        <div class="maplabel" id="labB" style="right:44px;display:none"></div>
+        <div class="swipe" id="swipe"></div>
+        <div class="north">▲<br>N</div>
+        <div class="scalebar" id="scale"><i></i><span></span></div>
+      </div>
+      <div class="legend" id="legend"></div>
+      <div class="readout" id="readout">Pase el cursor o toque el mapa para ver los valores del radar.</div>
+      <div class="timeline">
+        <button class="play" id="play" aria-label="Reproducir">▶</button>
+        <input type="range" id="tslider" min="0" max="0" value="0" aria-label="Fecha">
+        <div class="datebig" id="dateBig"></div>
+      </div>
+      <div class="ticks" id="ticks"></div>
+    </div>
+
+    <div class="stack">
+      <div class="kpis" id="kpis"></div>
+      <div class="story" id="story"></div>
+      <div class="card">
+        <h3>¿Cuánta agua entra y sale del bofedal?</h3>
+        <p class="sub">Volumen que cambia en la temporada, en miles de m³. Haga clic en un punto para ver esa fecha.</p>
+        <div class="chart" id="chVol"></div>
+      </div>
+      <div class="card">
+        <h3>Superficie húmeda y con agua</h3>
+        <p class="sub">Hectáreas por fecha de paso del satélite.</p>
+        <div class="chart" id="chArea"></div>
+      </div>
+      <details class="card params" id="params">
+        <summary>Ajustar el tratamiento de la imagen y la hidrología</summary>
+        <div class="pgrid" id="pgrid"></div>
+        <div style="margin-top:12px;display:flex;gap:8px"><button class="btn" id="resetP">Restablecer valores</button></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MÉTODO ============ -->
+<section class="view" id="v-metodo">
+  <div class="prose">
+    <h2>Del eco del radar a metros cúbicos de agua</h2>
+    <p>Los bofedales son turberas altoandinas, sobre los 3 800 m s. n. m., que funcionan como <b>esponjas</b>: guardan el agua de la temporada de lluvias y la sueltan poco a poco durante la época seca, cuando los ríos más la necesitan. Las nubes de la sierra tapan las imágenes ópticas justo en la época de lluvias. El radar NISAR, en cambio, ve a través de ellas, de día y de noche, cada 12 días.</p>
+
+    <div class="steps">
+      <div class="step"><div class="k">PASO 1</div><h4>Descargar NISAR GCOV</h4><p>Producto L2 de banda L, geocodificado y con corrección de terreno (γ⁰). Polarizaciones HH y HV.</p></div>
+      <div class="step"><div class="k">PASO 2</div><h4>Limpiar la imagen</h4><p>Recorte del área, remuestreo a una grilla UTM común, filtro de media para reducir el speckle y paso a dB.</p></div>
+      <div class="step"><div class="k">PASO 3</div><h4>Clasificar</h4><p>Agua abierta (eco muy bajo), bofedal saturado (eco alto en HH) y puna. Un pixel es bofedal si está saturado en suficientes fechas.</p></div>
+      <div class="step"><div class="k">PASO 4</div><h4>Medir la humedad</h4><p>Índice por detección de cambios: cada pixel se compara con su estado más seco y más húmedo de la serie.</p></div>
+      <div class="step"><div class="k">PASO 5</div><h4>Cuantificar el agua</h4><p>Área × espesor de turba × contenido de agua, más el agua superficial de lagunas y ojos de agua.</p></div>
+    </div>
+
+    <h3>Por qué el radar "ve" el agua</h3>
+    <p>El agua tiene una <b>constante dieléctrica muy alta</b> (~80, frente a ~3–5 del suelo seco). Cuanto más mojada está la vegetación almohadillada del bofedal (<i>Distichia</i>, <i>Plantago</i>), más energía devuelve al satélite y más brillante se ve en <b>HH</b>. El agua libre, en cambio, es un espejo liso que refleja el pulso lejos del satélite y aparece <b>negra</b>. La banda L (24 cm) atraviesa la vegetación baja y responde a la humedad de los primeros centímetros de suelo.</p>
+
+    <h3>Las fórmulas (con sus parámetros actuales)</h3>
+    <div class="formula" id="fx"></div>
+
+    <h3>Lo que hay que saber antes de usar los números</h3>
+    <ul>
+      <li>El radar responde a la humedad de los <b>primeros centímetros</b> del suelo y de la vegetación. El agua de la capa activa y de la turba profunda se <b>extrapola</b> a partir de parámetros (espesor, contenido de agua) que deben calibrarse con mediciones de campo o con estudios locales.</li>
+      <li>Los umbrales en dB son <b>heurísticos</b>: el brillo del agua y del bofedal cambia con el ángulo de incidencia, el viento y la vegetación. El script propone el umbral de agua con el <b>método de Otsu</b> (opción <code>--agua-auto</code>); el umbral de bofedal debe ajustarse mirando en el mapa un bofedal conocido.</li>
+      <li>El umbral de HV no baja de −20 dB porque el piso de ruido de NISAR está cerca de −23 dB: por debajo de eso HV mide ruido, no superficie. Si la escena es solo HH, el agua se detecta solo con HH.</li>
+      <li>La "variación en la temporada" es agua que el bofedal pierde. No toda llega al río: una parte se evapora o la usan las plantas.</li>
+      <li>Hay que usar <b>una sola órbita</b> (misma geometría). Mezclar ascendentes y descendentes cambia el brillo por razones geométricas, no por el agua. El script lo hace por defecto.</li>
+      <li>En laderas empinadas que miran al satélite el eco sube por geometría. Use una máscara de pendiente (DEM Copernicus 30 m) para descartarlas.</li>
+      <li>El viento puede rizar la superficie de las lagunas y hacerlas más brillantes, lo que lleva a subestimar el agua en esas fechas.</li>
+      <li>La serie NISAR calibrada empieza el 17 de junio de 2026, así que el índice de humedad se normaliza solo con la temporada observada hasta ahora.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ DATOS ============ -->
+<section class="view" id="v-datos">
+  <div class="grid">
+    <div class="prose">
+      <h2>Usar datos NISAR reales</h2>
+      <p>La vista inicial usa una <b>escena de demostración sintética</b>. Para analizar bofedales reales use el programa <code>Yaku_v05.py</code>:</p>
+      <h3>1 · Cuenta de NASA Earthdata (5 min)</h3>
+      <p>Regístrese gratis en <a href="https://urs.earthdata.nasa.gov/">urs.earthdata.nasa.gov</a>. En su perfil use <b>Generate Token</b> y copie el token (vale 60 días).</p>
+      <h3>2 · Abrir el programa</h3>
+      <p>Haga doble clic en <code>INICIAR_YAKU_v05.bat</code> (o abra <code>Yaku_v05.py</code> y presione ▶). Las librerías que falten se instalan solas la primera vez. Aparece un menú:</p>
+      <pre>1. Probar que todo funciona (sin internet)
+2. Ver qué imágenes NISAR hay (no descarga nada)
+3. Descargar imágenes (la órbita recomendada, 6 fechas)
+4. Procesar las imágenes descargadas
+5. Cambiar de área
+6. Salir</pre>
+      <h3>3 · Seguir el orden 1 → 2 → 3 → 4</h3>
+      <ul>
+        <li><b>Opción 5</b> (antes, si quiere): elija el área. La predeterminada es la <b>cabecera del río Cachi en Huamanga</b> (Apacheta, Vinchos), de donde sale el agua para la ciudad de Ayacucho. También están la provincia de Huamanga completa y un área propia por coordenadas.</li>
+        <li><b>Opción 2</b>: muestra las órbitas, cuántas fechas tiene cada una y cuántos GB pesan, y recomienda la mejor.</li>
+        <li><b>Opción 3</b>: descarga la órbita recomendada (por defecto 6 fechas repartidas). Pregunta antes de empezar. Si se corta el internet, repítala: solo baja lo que falta.</li>
+        <li><b>Opción 4</b>: procesa todo, lee la altitud (DEM Copernicus 30 m) para descartar ciudades, chacras y laderas, y crea <code>yaku_cachi.json</code> (para esta app) y <code>yaku_cachi_resumen.csv</code> (tabla para el informe).</li>
+      </ul>
+      <h3>6 · Cargar aquí</h3>
+      <div class="drop" id="drop">Arrastre <b>yaku_datos.json</b> aquí o <label style="color:var(--accent);cursor:pointer;text-decoration:underline">elíjalo<input type="file" id="file" accept=".json,application/json" hidden></label>
+        <div class="msg" id="fileMsg"></div></div>
+      <button class="btn" id="backDemo">Volver a la demostración</button>
+    </div>
+    <div class="card">
+      <h3>Resultados por fecha</h3>
+      <p class="sub" id="tblSub"></p>
+      <div style="overflow-x:auto"><table id="tbl"></table></div>
+      <div style="margin-top:10px;display:flex;gap:8px;align-items:center"><button class="btn pri" id="copyCsv">Copiar tabla (CSV)</button><span class="msg" id="csvMsg"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACERCA ============ -->
+<section class="view" id="v-acerca">
+  <div class="prose">
+    <h2>Acerca de YAKU</h2>
+    <p><b>Yaku</b> significa "agua" en quechua. Este prototipo fue creado para el desafío <b>"Bailando con los SAR"</b> del NASA Space Apps Challenge 2026: usar datos del radar NISAR (NASA–ISRO) para rastrear cambios en la superficie de la Tierra.</p>
+    <h3>El problema</h3>
+    <p>Los bofedales almacenan agua y regulan el caudal de los ríos andinos en la época seca. Se degradan por el sobrepastoreo, la extracción de turba ("champa"), el cambio del régimen hídrico y el retroceso glaciar, pero casi nadie puede medir <b>cuánta agua guardan</b> ni <b>cómo cambia mes a mes</b>, en parte porque las nubes bloquean los satélites ópticos.</p>
+    <h3>Para quién</h3>
+    <ul>
+      <li>Comunidades campesinas y juntas de usuarios de agua</li>
+      <li>Empresas de agua y programas de retribución por servicios ecosistémicos hídricos (MERESE)</li>
+      <li>Autoridades de agua, áreas naturales protegidas y gobiernos regionales</li>
+      <li>Docentes y estudiantes</li>
+    </ul>
+    <h3>Próximos pasos</h3>
+    <ul>
+      <li>Calibrar con piezómetros (nivel freático) y muestras de turba en campo</li>
+      <li>Añadir la máscara de pendiente con DEM y una capa óptica de contexto (Sentinel-2 o Landsat)</li>
+      <li>Usar InSAR (GUNW) para detectar la subsidencia de turba degradada</li>
+      <li>Activar alertas automáticas cuando un bofedal pierda humedad fuera de lo normal</li>
+    </ul>
+    <h3>Fuentes de datos</h3>
+    <ul>
+      <li>NISAR L2 GCOV, PROVISIONAL: <a href="https://search.asf.alaska.edu/#/?dataset=NISAR">ASF DAAC · Vertex</a></li>
+      <li><a href="https://nisar-docs.asf.alaska.edu/">Guía del usuario de datos NISAR (ASF)</a></li>
+      <li><a href="https://search.earthdata.nasa.gov/search?fps0=NISAR">NASA Earthdata Search</a></li>
+      <li><a href="https://asfopensarlab.github.io/NISAR_Cookbook/">NISAR Cookbook (ASF OpenSARLab)</a></li>
+    </ul>
+    <p class="warn">Código abierto. La escena de demostración es sintética y no representa mediciones reales. Los volúmenes son estimaciones que dependen de los parámetros indicados.</p>
+  </div>
+</section>
+</main>
+<footer>NASA Space Apps Challenge 2026 · Bailando con los SAR · Equipo HIDROTECH · Datos: NASA/ISRO NISAR vía ASF DAAC<br>Código desarrollado con asistencia de IA (Claude, Anthropic), revisado y probado por el equipo. / Code developed with SI assistance (Claude, Anthropic), reviewed and tested by the team.</footer>
+
+<script>
+"use strict";
+/* ===================== utilidades ===================== */
+const $ = s => document.querySelector(s);
+const MESES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const fmtDate = (d, long) => { const [y,m,dd] = d.split("-").map(Number); return long ? `${dd} ${MESES[m-1]} ${y}` : `${dd} ${MESES[m-1]}`; };
+const nf = (v, d=0) => Number.isFinite(v) ? v.toLocaleString("es-PE",{minimumFractionDigits:d,maximumFractionDigits:d}) : "–";
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const hex2rgb = h => { h=h.replace("#",""); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; };
+const clamp = (v,a,b) => v<a?a:v>b?b:v;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+/* ===================== parámetros (idénticos al script) ===================== */
+const PDEF = {agua_hh_max:-16, agua_hv_max:-20, bof_hh_min:-9, bof_frec_min:0.30, rango_min_db:1.5,
+  turba_m:2.0, capa_activa_m:0.5, theta_sat:0.90, theta_min:0.55, prof_agua_m:1.0, elev_min:3800, pend_max:15};
+const PSPEC = [
+  ["h","Clasificación del radar"],
+  ["agua_hh_max","Agua: HH máximo",-24,-10,0.1,"dB"],
+  ["agua_hv_max","Agua: HV máximo",-32,-16,0.5,"dB"],
+  ["bof_hh_min","Bofedal saturado: HH mínimo",-14,-4,0.5,"dB"],
+  ["bof_frec_min","Fechas saturadas para ser bofedal",0.1,0.9,0.05,"%"],
+  ["h","Relieve (requiere datos con DEM)"],
+  ["elev_min","Altitud mínima de bofedal",3000,4800,50,"m"],
+  ["pend_max","Pendiente máxima",2,40,1,"%"],
+  ["h","Hidrología de la turba"],
+  ["turba_m","Espesor medio de turba",0.5,8,0.1,"m"],
+  ["capa_activa_m","Capa activa (se seca y moja)",0.1,1.5,0.05,"m"],
+  ["theta_sat","Agua en turba saturada (θ sat)",0.6,0.97,0.01,"m³/m³"],
+  ["theta_min","Agua en turba más seca (θ mín)",0.2,0.85,0.01,"m³/m³"],
+  ["prof_agua_m","Profundidad media de lagunas",0.2,5,0.1,"m"],
+];
+let PBASE = {...PDEF}; let P = {...PDEF};
+
+/* ===================== escena de demostración ===================== */
+function makeDemo(){
+  const W=240,H=240,px=20, rnd=mulberry32(20261114);
+  const dates=["2026-06-17","2026-07-11","2026-08-04","2026-08-28","2026-09-21","2026-10-15","2026-11-08"];
+  const wet=[0.80,0.62,0.46,0.34,0.28,0.42,0.70]; // fin de lluvias -> estiaje -> inicio de lluvias
+  // ruido suave (valor por grilla gruesa interpolada)
+  function smooth(scale,seed){const r=mulberry32(seed),gw=Math.ceil(W/scale)+2,gh=Math.ceil(H/scale)+2,g=new Float32Array(gw*gh).map(()=>r()*2-1);
+    return (x,y)=>{const fx=x/scale,fy=y/scale,x0=Math.floor(fx),y0=Math.floor(fy),tx=fx-x0,ty=fy-y0,s=t=>t*t*(3-2*t);
+      const a=g[y0*gw+x0],b=g[y0*gw+x0+1],c=g[(y0+1)*gw+x0],d=g[(y0+1)*gw+x0+1];return (a+(b-a)*s(tx))*(1-s(ty))+(c+(d-c)*s(tx))*s(ty);}}
+  const n1=smooth(30,7),n2=smooth(9,11),n3=smooth(5,13);
+  const yc=x=>H*0.52+26*Math.sin(x/38)+9*Math.sin(x/13+1);
+  const xt=y=>165+14*Math.sin(y/20);             // quebrada tributaria (norte)
+  const N=W*H, dist=new Float32Array(N), elev=new Float32Array(N), half=new Float32Array(N), lake=new Float32Array(N), ojo=new Uint8Array(N), degr=new Float32Array(N);
+  const ojos=[[40,0],[95,0],[120,0],[150,0],[200,0],[60,0]].map(([x])=>[x+rnd()*6,yc(x)+(rnd()-.5)*8,1.6+rnd()*1.4]);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    const i=y*W+x;
+    let d=Math.abs(y-yc(x));
+    const dtrib= y<yc(165)? Math.abs(x-xt(y))*1.2 : 999;
+    d=Math.min(d,dtrib);
+    dist[i]=d;
+    half[i]=10+4*n1(x,y);                          // semiancho del bofedal (px)
+    elev[i]=4320+Math.pow(Math.max(d-6,0),1.25)*2.4+18*n1(x+50,y)+6*n2(x,y);
+    const lx=(x-58)/15, ly=(y-(yc(58)+1))/8.5; lake[i]=Math.hypot(lx,ly);
+    for(const [ox,oy,r] of ojos){ if(Math.hypot(x-ox,y-oy)<r) ojo[i]=1; }
+    degr[i]=Math.hypot((x-138)/11,(y-yc(138)-3)/7);   // parche degradado (extracción de turba)
+  }
+  const hh=[],hv=[];
+  for(let t=0;t<dates.length;t++){
+    const w=wet[t], H1=new Float32Array(N), V1=new Float32Array(N);
+    const lakeR=Math.sqrt(0.78+0.22*w);
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      const i=y*W+x;
+      // pendiente orientada hacia el radar (mirada desde el oeste)
+      const ex=(elev[Math.min(i+1,N-1)]-elev[Math.max(i-1,0)])/(2*px);
+      const geo=clamp(-ex*9,-2.5,2.5);
+      let hhdb,hvdb;
+      if(lake[i]<lakeR || (ojo[i] && w>0.3)){ hhdb=-22.5+1.5*n3(x+t*7,y); hvdb=-29+n3(x,y+t*5); }
+      else if(dist[i]<half[i]){
+        const edge=dist[i]/half[i];
+        let wl=w*(1-0.55*edge)+0.08*n2(x+t*3,y);
+        if(degr[i]<1) wl*=0.42;                        // turba extraída: no retiene agua
+        wl=clamp(wl,0,1);
+        hhdb=-11.2+9.5*wl+0.8*n3(x,y)+geo*0.3;
+        hvdb=hhdb-7.6+1.2*wl+0.6*n3(y,x);
+      } else {
+        hhdb=-12.3+geo*0.8+0.9*n2(x,y)+0.5*w; hvdb=hhdb-6.8+0.6*n3(x,y);
+      }
+      // speckle (gamma, 6 vistas) en lineal
+      let s1=0,s2=0; for(let k=0;k<6;k++){s1-=Math.log(rnd()+1e-12); s2-=Math.log(rnd()+1e-12);} s1/=6; s2/=6;
+      H1[i]=Math.pow(10,hhdb/10)*s1; V1[i]=Math.pow(10,hvdb/10)*s2;
+    }
+    hh.push(toDb(box3(H1,W,H))); hv.push(toDb(box3(V1,W,H)));
+  }
+  return {sitio:"Escena de demostración (sintética) · bofedal altoandino",demo:true,W,H,px,dates,hh,hv,orbitas:dates.map(()=>"demo")};
+}
+function box3(a,W,H){const o=new Float32Array(a.length);for(let y=0;y<H;y++)for(let x=0;x<W;x++){let s=0,n=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const yy=y+dy,xx=x+dx;if(yy<0||xx<0||yy>=H||xx>=W)continue;const v=a[yy*W+xx];if(Number.isFinite(v)){s+=v;n++;}}o[y*W+x]=n?s/n:NaN;}return o;}
+function toDb(a){const o=new Float32Array(a.length);for(let i=0;i<a.length;i++)o[i]=a[i]>0?10*Math.log10(a[i]):NaN;return o;}
+
+/* ===================== carga de datos reales ===================== */
+function decodeI16(b64,N){const bin=atob(b64),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+  const dv=new DataView(u.buffer),o=new Float32Array(N);for(let i=0;i<N;i++){const v=dv.getInt16(i*2,true);o[i]=v===-32768?NaN:v/100;}return o;}
+function fromJson(j){
+  if(j.formato!=="yaku-1") throw new Error("El archivo no tiene formato yaku-1 (¿lo generó Yaku_v05.py?)");
+  const W=j.ancho,H=j.alto,N=W*H;
+  return {sitio:j.sitio||"Bofedal",demo:false,W,H,px:j.pixel_m,params:j.parametros||null,dates:j.fechas,orbitas:j.orbitas||[],
+    hh:j.hh.map(b=>decodeI16(b,N)),hv:j.hv.map(b=>decodeI16(b,N)),bbox:j.bbox,
+    dem:j.dem?decodeI16(j.dem,N).map(v=>v*100):null, pend:j.pend?decodeI16(j.pend,N).map(v=>v*10):null};
+}
+
+/* ===================== análisis (misma lógica que Yaku_v05.py) ===================== */
+let D=null, R=null;
+function analyze(){
+  const {W,H,px,hh,hv,dates}=D, N=W*H, T=dates.length, apx=px*px;
+  const hmin=new Float32Array(N).fill(Infinity), hmax=new Float32Array(N).fill(-Infinity), nsat=new Uint16Array(N), nval=new Uint16Array(N);
+  const cls=dates.map(()=>new Uint8Array(N));   // 0 sin dato,1 puna,2 bofedal menos húmedo,3 bofedal saturado,4 agua
+  const water=dates.map(()=>new Uint8Array(N));
+  const zA=new Uint8Array(N).fill(1), zB=new Uint8Array(N).fill(1);   // apto agua / apto bofedal
+  if(D.dem){for(let i=0;i<N;i++){const e=D.dem[i],pd=D.pend[i];if(!Number.isFinite(e))continue;
+    const plano=pd<=P.pend_max; zA[i]=plano?1:0; zB[i]=(plano&&e>=P.elev_min)?1:0;}}
+  for(let t=0;t<T;t++){const a=hh[t],b=hv[t],w=water[t];
+    for(let i=0;i<N;i++){const v=a[i];if(!Number.isFinite(v))continue;nval[i]++;
+      if(v<hmin[i])hmin[i]=v;if(v>hmax[i])hmax[i]=v;
+      const isW=zA[i]&&v<P.agua_hh_max&&!(b[i]>=P.agua_hv_max); /* sin HV (modo HH): solo HH */ w[i]=isW?1:0;
+      if(!isW&&zB[i]&&v>=P.bof_hh_min)nsat[i]++;}}
+  const bof=new Uint8Array(N);
+  for(let i=0;i<N;i++) bof[i]= nval[i]>0 && nsat[i]/nval[i]>=P.bof_frec_min ?1:0;
+  const smi=dates.map(()=>new Float32Array(N));
+  const out=[], prof=Math.max(P.turba_m-P.capa_activa_m,0);
+  for(let t=0;t<T;t++){const a=hh[t],s=smi[t],c=cls[t],w=water[t];
+    let nb=0,nw=0,nsatb=0,sumS=0,sumTh=0;
+    for(let i=0;i<N;i++){const v=a[i];if(!Number.isFinite(v)){s[i]=NaN;continue;}
+      const rg=hmax[i]-hmin[i]; const si=rg>=P.rango_min_db?clamp((v-hmin[i])/rg,0,1):0.5; s[i]=si;
+      if(w[i]){c[i]=4;nw++;continue;}
+      if(bof[i]){nb++;sumS+=si;sumTh+=P.theta_min+si*(P.theta_sat-P.theta_min);
+        if(v>=P.bof_hh_min){c[i]=3;nsatb++;}else c[i]=2;}
+      else c[i]=zB[i]?1:5;}
+    const vProf=nb*apx*prof*P.theta_sat, vAct=sumTh*apx*P.capa_activa_m, vSup=nw*apx*P.prof_agua_m;
+    out.push({fecha:dates[t],area_bofedal_ha:nb*apx/1e4,area_saturada_ha:nsatb*apx/1e4,area_agua_ha:nw*apx/1e4,
+      humedad_media_pct:nb?sumS/nb*100:NaN,vol_turba_profunda_m3:vProf,vol_capa_activa_m3:vAct,vol_superficial_m3:vSup,vol_total_m3:vProf+vAct+vSup});
+  }
+  R={res:out,cls,smi,bof,zB};
+}
+
+/* ===================== render del mapa ===================== */
+const cv=$("#map"), ctx=cv.getContext("2d");
+const off=[document.createElement("canvas"),document.createElement("canvas")];
+let state={t:0,layer:"clasif",cmp:false,tB:0,swipe:0.5,playing:null};
+const RAMP=["#cde2fb","#9ec5f4","#6da7ec","#3987e5","#256abf","#184f95","#0d366b"].map(hex2rgb);
+function rampAt(u){u=clamp(u,0,1)*(RAMP.length-1);const k=Math.min(Math.floor(u),RAMP.length-2),f=u-k,a=RAMP[k],b=RAMP[k+1];return [a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f];}
+const lin=(v,a,b)=>clamp((v-a)/(b-a),0,1)*255;
+function paint(canvas,t){
+  const {W,H}=D,N=W*H; canvas.width=W;canvas.height=H;
+  const c2=canvas.getContext("2d"),img=c2.createImageData(W,H),d=img.data;
+  const hh=D.hh[t],hv=D.hv[t],cl=R.cls[t],sm=R.smi[t];
+  const cW=hex2rgb(cssv("--water")),cB=hex2rgb(cssv("--bof")),cBd=hex2rgb(cssv("--bof-dry")),cP=hex2rgb(cssv("--puna"));
+  for(let i=0;i<N;i++){const o=i*4;let r=0,g=0,b=0,a=255;const v=hh[i];
+    if(!Number.isFinite(v)){d[o+3]=0;continue;}
+    switch(state.layer){
+      case "hh": r=g=b=lin(v,-25,-2);break;
+      case "hv": r=g=b=lin(hv[i],-33,-9);break;
+      case "rgb": r=lin(v,-22,-2);g=lin(hv[i],-30,-10);b=lin(v-hv[i],3,13);break;
+      case "smi": { const k=cl[i];
+        if(k===2||k===3){[r,g,b]=rampAt(sm[i]);}
+        else if(k===4){r=22;g=24;b=28;}
+        else {const gr=lin(v,-25,-2)*0.55+40;r=g=b=gr;} break; }
+      default: { const k=cl[i];
+        if(k===4)[r,g,b]=cW; else if(k===3)[r,g,b]=cB; else if(k===2)[r,g,b]=cBd;
+        else if(k===5){const gr=lin(v,-22,-4)*0.35+90;r=g=b=gr;}
+        else {const s=lin(v,-20,-6)/255; r=cP[0]*(0.82+0.18*s); g=cP[1]*(0.82+0.18*s); b=cP[2]*(0.82+0.18*s);} }
+    }
+    d[o]=r;d[o+1]=g;d[o+2]=b;d[o+3]=a;}
+  c2.putImageData(img,0,0);
+}
+function drawMap(){
+  if(!D)return;
+  const wrap=$("#mapwrap"),rect=wrap.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+  const S=Math.round(rect.width*dpr); cv.width=S; cv.height=Math.round(S*D.H/D.W);
+  wrap.style.aspectRatio=`${D.W}/${D.H}`;
+  ctx.imageSmoothingEnabled=false;
+  paint(off[0],state.t); ctx.drawImage(off[0],0,0,cv.width,cv.height);
+  $("#labA").textContent=fmtDate(D.dates[state.t],true);
+  if(state.cmp){
+    paint(off[1],state.tB);
+    const sx=Math.round(state.swipe*cv.width);
+    ctx.save();ctx.beginPath();ctx.rect(sx,0,cv.width-sx,cv.height);ctx.clip();ctx.drawImage(off[1],0,0,cv.width,cv.height);ctx.restore();
+    $("#swipe").style.display="block";$("#swipe").style.left=`calc(${state.swipe*100}% - 1px)`;
+    $("#labB").style.display="block";$("#labB").textContent=fmtDate(D.dates[state.tB],true);
+  } else {$("#swipe").style.display="none";$("#labB").style.display="none";}
+  // escala
+  const kmTot=D.W*D.px/1000, nice=[0.5,1,2,5,10,20].find(v=>v>=kmTot/5)||1;
+  $("#scale i").style.width=`${nice/kmTot*rect.width}px`;$("#scale span").textContent=`${nice} km`;
+}
+function drawLegend(){
+  const L=$("#legend");
+  const sw=c=>`<i style="background:${c}"></i>`;
+  if(state.layer==="clasif") L.innerHTML=`<span>${sw("var(--water)")}Agua abierta</span><span>${sw("var(--bof)")}Bofedal saturado</span><span>${sw("var(--bof-dry)")}Bofedal menos húmedo</span><span>${sw("var(--puna)")}Puna (zona alta y plana)</span>`+(D.dem?`<span>${sw("#7a7a7a")}Bajo ${P.elev_min} m o pendiente &gt; ${P.pend_max} %</span>`:"");
+  else if(state.layer==="smi") L.innerHTML=`<span>Humedad del bofedal: más seco<span class="ramp" style="background:linear-gradient(90deg,#cde2fb,#6da7ec,#256abf,#0d366b)"></span>más húmedo</span><span>${sw("#16181c")}Agua abierta</span><span>Gris: fuera del bofedal</span>`;
+  else if(state.layer==="rgb") L.innerHTML=`<span>Rojo = HH · Verde = HV · Azul = HH/HV. Verde claro: bofedal húmedo; negro: agua; magenta: suelo y roca.</span>`;
+  else L.innerHTML=`<span>Retrodispersión ${state.layer.toUpperCase()} (γ⁰, dB): oscuro = eco débil (agua lisa); claro = eco fuerte (vegetación húmeda, laderas que miran al radar).</span>`;
+}
+
+/* ===================== KPIs, historia, gráficos ===================== */
+function kpis(){
+  const r=R.res[state.t], all=R.res;
+  const act=all.map(x=>x.vol_capa_activa_m3+x.vol_superficial_m3);
+  const iMin=act.indexOf(Math.min(...act)); const pre=act.slice(0,iMin+1); const iMax=pre.indexOf(Math.max(...pre));
+  const reg=act[iMax]-act[iMin];
+  $("#kpis").innerHTML=`
+   <div class="kpi"><div class="l">Agua almacenada (estimada)</div><div class="v">${nf(r.vol_total_m3/1e6,2)}<small>millones de m³</small></div><div class="n">turba + lagunas, ${fmtDate(r.fecha)}</div></div>
+   <div class="kpi"><div class="l">Variación de agua en la temporada</div><div class="v">${nf(reg/1e3,0)}<small>mil m³</small></div><div class="n">≈ ${nf(reg/2500,0)} piscinas olímpicas</div></div>
+   <div class="kpi"><div class="l">Área de bofedal</div><div class="v">${nf(r.area_bofedal_ha,1)}<small>ha</small></div><div class="n">${nf(r.area_saturada_ha,1)} ha saturadas hoy</div></div>
+   <div class="kpi"><div class="l">Humedad relativa del bofedal</div><div class="v">${nf(r.humedad_media_pct,0)}<small>%</small></div><div class="n">0 % = más seco de la serie · 100 % = más húmedo</div></div>`;
+  const last=all.length-1, rec= iMin<last ? (act[last]-act[iMin])/Math.max(reg,1)*100 : NaN;
+  $("#story").innerHTML = reg>0 ? `Entre el <b>${fmtDate(all[iMax].fecha,true)}</b> y el <b>${fmtDate(all[iMin].fecha,true)}</b>, el bofedal perdió cerca de <b>${nf((act[iMax]-act[iMin])/1e3,0)} mil m³</b> de agua (≈ ${nf(reg/2500,0)} piscinas olímpicas). Parte alimentó los ríos en plena época seca y parte se evaporó o la transpiraron las plantas.`+
+    (Number.isFinite(rec)&&iMin<last ? ` Con las primeras lluvias, al <b>${fmtDate(all[last].fecha,true)}</b>, ya recuperó el <b>${nf(clamp(rec,0,999),0)} %</b>.`:"")
+    : "Ajuste los parámetros: no se detecta variación de agua en la serie.";
+}
+
+function lineChart(el,{series,unit,dec=0}){
+  const dates=D.dates, W=560, H=220, m={l:46,r:92,t:10,b:26}, iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const vals=series.flatMap(s=>s.values).filter(Number.isFinite);
+  let lo=Math.min(0,...vals), hi=Math.max(...vals)*1.08||1;
+  const step=Math.pow(10,Math.floor(Math.log10(hi/4))), nice=[1,2,2.5,5,10].map(k=>k*step).find(k=>hi/k<=5);
+  hi=Math.ceil(hi/nice)*nice;
+  const X=i=>m.l+(dates.length===1?iw/2:i*iw/(dates.length-1)), Y=v=>m.t+ih-(v-lo)/(hi-lo)*ih;
+  let g="";
+  for(let v=lo;v<=hi+1e-9;v+=nice){g+=`<line x1="${m.l}" x2="${m.l+iw}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${m.l-8}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${nf(v,nice<1?1:0)}</text>`;}
+  dates.forEach((d,i)=>{ if(dates.length<=8||i%Math.ceil(dates.length/8)===0) g+=`<text x="${X(i)}" y="${H-6}" text-anchor="middle" font-size="11" fill="var(--muted)">${fmtDate(d)}</text>`;});
+  g+=`<line x1="${X(state.t)}" x2="${X(state.t)}" y1="${m.t}" y2="${m.t+ih}" stroke="var(--text-2)" stroke-dasharray="3 3" stroke-width="1"/>`;
+  // posiciones de etiquetas directas sin solaparse
+  const ends=series.map(s=>({s,y:Y(s.values[s.values.length-1])})).sort((a,b)=>a.y-b.y);
+  for(let k=1;k<ends.length;k++) if(ends[k].y-ends[k-1].y<14) ends[k].y=ends[k-1].y+14;
+  series.forEach(s=>{
+    const pts=s.values.map((v,i)=>`${X(i)},${Y(v)}`).join(" ");
+    g+=`<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    s.values.forEach((v,i)=>{g+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${i===state.t?5.5:4}" fill="${s.color}" stroke="var(--surface)" stroke-width="2"/>`;});
+  });
+  ends.forEach(e=>{g+=`<text x="${m.l+iw+8}" y="${e.y+4}" font-size="11.5" fill="var(--text-2)">${e.s.short}</text>`;});
+  // capas de interacción
+  dates.forEach((d,i)=>{const x0=i===0?m.l-10:(X(i-1)+X(i))/2, x1=i===dates.length-1?m.l+iw+10:(X(i)+X(i+1))/2;
+    g+=`<rect class="hit" data-i="${i}" x="${x0}" y="${m.t}" width="${x1-x0}" height="${ih}" fill="transparent" style="cursor:pointer"/>`;});
+  el.innerHTML=`<div class="leg">${series.map(s=>`<span><i style="background:${s.color}"></i>${s.name}</span>`).join("")}</div>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${series.map(s=>s.name).join(", ")} por fecha">${g}</svg><div class="tip"></div>`;
+  const tip=el.querySelector(".tip"), svg=el.querySelector("svg");
+  el.querySelectorAll(".hit").forEach(r=>{
+    r.addEventListener("pointerenter",()=>{const i=+r.dataset.i;
+      tip.innerHTML=`<div class="d">${fmtDate(dates[i],true)}</div>`+series.map(s=>`<div><i style="background:${s.color}"></i>${s.name}: <b>${nf(s.values[i],dec)}</b> ${unit}</div>`).join("");
+      const sc=svg.getBoundingClientRect().width/W, x=X(i)*sc; tip.style.display="block";
+      tip.style.left=Math.min(x+12, el.clientWidth-tip.offsetWidth-4)+"px"; tip.style.top="34px";});
+    r.addEventListener("pointerleave",()=>tip.style.display="none");
+    r.addEventListener("click",()=>setT(+r.dataset.i));
+  });
+}
+function charts(){
+  const s1=cssv("--s1"),s2=cssv("--s2");
+  lineChart($("#chVol"),{unit:"mil m³",series:[
+    {name:"Agua en la capa activa de turba",short:"Capa activa",color:s2,values:R.res.map(r=>r.vol_capa_activa_m3/1e3)},
+    {name:"Agua superficial (lagunas y ojos)",short:"Superficial",color:s1,values:R.res.map(r=>r.vol_superficial_m3/1e3)}]});
+  lineChart($("#chArea"),{unit:"ha",dec:1,series:[
+    {name:"Bofedal saturado",short:"Saturado",color:s2,values:R.res.map(r=>r.area_saturada_ha)},
+    {name:"Agua abierta",short:"Agua",color:s1,values:R.res.map(r=>r.area_agua_ha)}]});
+}
+function table(){
+  const cols=[["fecha","Fecha"],["area_bofedal_ha","Bofedal (ha)"],["area_saturada_ha","Saturado (ha)"],["area_agua_ha","Agua (ha)"],["humedad_media_pct","Humedad (%)"],["vol_capa_activa_m3","Capa activa (mil m³)"],["vol_superficial_m3","Superficial (mil m³)"],["vol_total_m3","Total (mil m³)"]];
+  $("#tbl").innerHTML=`<tr>${cols.map(c=>`<th>${c[1]}</th>`).join("")}</tr>`+R.res.map(r=>`<tr>${cols.map(([k],j)=>`<td>${j===0?fmtDate(r[k],true):k.includes("vol")?nf(r[k]/1e3,1):nf(r[k],1)}</td>`).join("")}</tr>`).join("");
+  $("#tblSub").textContent=`${D.sitio} · ${D.dates.length} fechas · pixel ${D.px} m`;
+  $("#copyCsv").onclick=async()=>{const csv=[cols.map(c=>c[0]).join(",")].concat(R.res.map(r=>cols.map(([k])=>typeof r[k]==="number"?r[k].toFixed(2):r[k]).join(","))).join("\n");
+    try{await navigator.clipboard.writeText(csv);$("#csvMsg").textContent="Copiado. Péguelo en una hoja de cálculo.";}catch(e){$("#csvMsg").textContent="No se pudo copiar; seleccione la tabla manualmente.";}};
+}
+function formulas(){
+  $("#fx").innerHTML=
+  `Agua abierta: HH &lt; ${P.agua_hh_max} dB  y  HV &lt; ${P.agua_hv_max} dB<br>`+
+  `Bofedal: saturado (HH ≥ ${P.bof_hh_min} dB) en ≥ ${Math.round(P.bof_frec_min*100)} % de las fechas<br><br>`+
+  `Humedad relativa  h = (HH<sub>t</sub> − HH<sub>mín</sub>) / (HH<sub>máx</sub> − HH<sub>mín</sub>)<br>`+
+  `θ(h) = ${P.theta_min} + h · (${P.theta_sat} − ${P.theta_min})   [m³ de agua por m³ de turba]<br><br>`+
+  `V<sub>profunda</sub> = Área<sub>bofedal</sub> × (${P.turba_m} − ${P.capa_activa_m}) m × ${P.theta_sat}<br>`+
+  `V<sub>activa</sub> = Σ<sub>pixeles</sub> Área<sub>pixel</sub> × ${P.capa_activa_m} m × θ(h)<br>`+
+  `V<sub>superficial</sub> = Área<sub>agua</sub> × ${P.prof_agua_m} m<br>`+
+  `<b>Agua almacenada = V<sub>profunda</sub> + V<sub>activa</sub> + V<sub>superficial</sub></b><br>`+
+  `<b>Variación en la temporada = máx − mín (V<sub>activa</sub> + V<sub>superficial</sub>)</b>`;
+}
+
+/* ===================== controles ===================== */
+function buildParams(){
+  $("#pgrid").innerHTML=PSPEC.map(s=>s[0]==="h"?`<h4>${s[1]}</h4>`:
+    `<div class="prm"><label for="p_${s[0]}">${s[1]} <b id="pv_${s[0]}"></b></label><input type="range" id="p_${s[0]}" min="${s[2]}" max="${s[3]}" step="${s[4]}"></div>`).join("");
+  PSPEC.filter(s=>s[0]!=="h").forEach(s=>{const inp=$("#p_"+s[0]);inp.value=P[s[0]];
+    inp.addEventListener("input",()=>{P[s[0]]=+inp.value;if(P.theta_min>P.theta_sat-0.01){P.theta_min=P.theta_sat-0.01;}showP();schedule();});});
+  showP();
+}
+function showP(){["elev_min","pend_max"].forEach(k=>{const el=$("#p_"+k);if(el)el.disabled=!(D&&D.dem);});PSPEC.filter(s=>s[0]!=="h").forEach(s=>{const v=P[s[0]];$("#p_"+s[0]).value=v;$("#pv_"+s[0]).textContent=s[5]==="%"?Math.round(v*100)+" %":`${v} ${s[5]}`;});}
+let raf=0; function schedule(){cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{analyze();refresh();});}
+function setT(i){state.t=clamp(i,0,D.dates.length-1);$("#tslider").value=state.t;refresh();}
+function refresh(){
+  $("#dateBig").textContent=fmtDate(D.dates[state.t],true);
+  drawMap();drawLegend();kpis();charts();table();formulas();
+}
+function loadData(d){
+  D=d; state.t=0; PBASE={...PDEF,...(d.params||{})}; P={...PBASE}; showP(); state.tB=Math.min(4,D.dates.length-1);
+  $("#tslider").max=D.dates.length-1;$("#tslider").value=0;
+  $("#cmpDate").innerHTML=D.dates.map((x,i)=>`<option value="${i}">${fmtDate(x,true)}</option>`).join("");$("#cmpDate").value=state.tB;
+  $("#ticks").innerHTML=`<span>${fmtDate(D.dates[0])}</span><span>${fmtDate(D.dates[D.dates.length-1])}</span>`;
+  $("#badge").innerHTML=D.demo?`<b>Demostración</b> · escena sintética`:`<b>NISAR GCOV</b> · ${D.sitio}`;
+  analyze();refresh();
+}
+
+$("#layers").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+  $("#layers").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));state.layer=b.dataset.l;drawMap();drawLegend();});
+$("#tslider").addEventListener("input",e=>setT(+e.target.value));
+$("#play").addEventListener("click",()=>{
+  if(state.playing){clearInterval(state.playing);state.playing=null;$("#play").textContent="▶";return;}
+  $("#play").textContent="❚❚";
+  state.playing=setInterval(()=>setT((state.t+1)%D.dates.length),900);});
+$("#cmpOn").addEventListener("change",e=>{state.cmp=e.target.checked;drawMap();});
+$("#cmpDate").addEventListener("change",e=>{state.tB=+e.target.value;state.cmp=true;$("#cmpOn").checked=true;drawMap();});
+$("#resetP").addEventListener("click",()=>{P={...PBASE};showP();schedule();});
+
+// swipe + lectura de pixel
+const wrap=$("#mapwrap"); let dragging=false;
+wrap.addEventListener("pointerdown",e=>{if(state.cmp){dragging=true;wrap.setPointerCapture(e.pointerId);moveSwipe(e);}});
+wrap.addEventListener("pointerup",()=>dragging=false);
+function moveSwipe(e){const r=wrap.getBoundingClientRect();state.swipe=clamp((e.clientX-r.left)/r.width,0.02,0.98);drawMap();}
+const CLS=["sin dato","Puna","Bofedal menos húmedo","Bofedal saturado","Agua abierta","Fuera de zona (baja o empinada)"];
+wrap.addEventListener("pointermove",e=>{
+  if(dragging){moveSwipe(e);}
+  const r=wrap.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)/r.width*D.W),y=Math.floor((e.clientY-r.top)/r.height*D.H);
+  if(x<0||y<0||x>=D.W||y>=D.H)return;
+  const t=state.cmp&&(e.clientX-r.left)/r.width>state.swipe?state.tB:state.t, i=y*D.W+x, k=R.cls[t][i];
+  const th=P.theta_min+R.smi[t][i]*(P.theta_sat-P.theta_min);
+  $("#readout").innerHTML=k?`<b>${CLS[k]}</b> · ${fmtDate(D.dates[t])} · HH ${nf(D.hh[t][i],1)} dB · HV ${nf(D.hv[t][i],1)} dB`+
+    (D.dem?` · ${nf(D.dem[i],0)} m s.n.m. · pendiente ${nf(D.pend[i],0)} %`:"")+
+    ((k===2||k===3)?` · humedad ${nf(R.smi[t][i]*100,0)} % · θ ${nf(th,2)} m³/m³`:""):"Sin dato";
+});
+wrap.addEventListener("pointerleave",()=>{$("#readout").textContent="Pase el cursor o toque el mapa para ver los valores del radar.";});
+window.addEventListener("resize",()=>{if(D)drawMap();});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>D&&refresh());
+
+// archivos
+function handleFile(f){if(!f)return;$("#fileMsg").textContent="Leyendo "+f.name+"…";
+  const rd=new FileReader();rd.onload=()=>{try{loadData(fromJson(JSON.parse(rd.result)));$("#fileMsg").textContent=`Cargado: ${D.dates.length} fechas, ${D.W}×${D.H} px. Vaya a "Explorar".`;}
+    catch(err){$("#fileMsg").textContent="Error: "+err.message;}};rd.readAsText(f);}
+$("#file").addEventListener("change",e=>handleFile(e.target.files[0]));
+const drop=$("#drop");
+["dragover","dragenter"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over");}));
+drop.addEventListener("drop",e=>handleFile(e.dataTransfer.files[0]));
+let DEMO=null;
+$("#backDemo").addEventListener("click",()=>{loadData(DEMO||(DEMO=makeDemo()));$("#fileMsg").textContent="Demostración cargada.";});
+document.querySelectorAll("pre .copy").forEach(b=>b.addEventListener("click",async()=>{
+  const txt=b.parentElement.textContent.replace(/^Copiar/,"").trim();try{await navigator.clipboard.writeText(txt);b.textContent="✓";setTimeout(()=>b.textContent="Copiar",1200);}catch(e){b.textContent="Seleccione";}}));
+
+// pestañas (hash)
+function route(){const v=(location.hash||"#explorar").slice(1);const ok=["explorar","metodo","datos","acerca"].includes(v)?v:"explorar";
+  document.querySelectorAll("section.view").forEach(s=>s.classList.toggle("on",s.id==="v-"+ok));
+  document.querySelectorAll("#tabs a").forEach(a=>a.classList.toggle("on",a.dataset.v===ok));
+  if(ok==="explorar"&&D)requestAnimationFrame(drawMap);}
+window.addEventListener("hashchange",route);
+
+buildParams(); route();
+DEMO=makeDemo(); loadData(DEMO);
+
+/* ===================== app instalable (PWA) ===================== */
+const esWeb = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
+if (esWeb && "serviceWorker" in navigator) {
+  try { navigator.serviceWorker.register("sw.js").catch(()=>{}); } catch (e) {}
+}
+let pedidoInstalar = null;
+const btnI = $("#btnInstalar");
+const enApp = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); pedidoInstalar = e; if (!enApp) btnI.classList.add("on"); });
+if (esIOS && esWeb && !enApp) btnI.classList.add("on");
+btnI.addEventListener("click", async () => {
+  if (pedidoInstalar) { pedidoInstalar.prompt(); try { await pedidoInstalar.userChoice; } catch (e) {} pedidoInstalar = null; btnI.classList.remove("on"); }
+  else $("#modalIOS").classList.add("on");
+});
+$("#cerrarIOS").addEventListener("click", () => $("#modalIOS").classList.remove("on"));
+window.addEventListener("appinstalled", () => btnI.classList.remove("on"));
+function estadoRed(){ $("#aviso").classList.toggle("on", esWeb && !navigator.onLine); }
+window.addEventListener("online", estadoRed); window.addEventListener("offline", estadoRed); estadoRed();
+
+/* Datos reales publicados junto a la app (carpeta datos/): se cargan solos en el celular */
+if (esWeb) {
+  (async () => {
+    for (const ruta of ["datos/yaku_cachi.json", "datos/yaku_datos.json"]) {
+      try {
+        const r = await fetch(ruta, { cache: "no-cache" });
+        if (!r.ok) continue;
+        const d = fromJson(await r.json()); loadData(d);
+        $("#fileMsg").textContent = `Datos NISAR cargados automáticamente (${ruta}).`;
+        break;
+      } catch (e) { /* sin datos publicados: se queda la demostración */ }
+    }
+  })();
+}
+</script>
+</body>
+</html>

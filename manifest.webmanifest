@@ -1,0 +1,19 @@
+{
+  "name": "YAKU · Agua de los bofedales (NISAR)",
+  "short_name": "YAKU",
+  "description": "Monitoreo del agua almacenada en los bofedales altoandinos con el radar NISAR de NASA–ISRO. Equipo HIDROTECH.",
+  "lang": "es",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f3ef",
+  "theme_color": "#0d5c63",
+  "categories": ["education", "utilities", "weather"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
