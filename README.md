@@ -21,6 +21,15 @@ of the **Cachi River**, main water source of Ayacucho city (Huamanga, Peru).
 temperature, solar radiation and vegetation) corrected with each NISAR acquisition, plus IoT field sensors,
 to monitor water reserves in near real time and scale to mountain wetlands worldwide.
 
+## Live monitor (automatic NASA data)
+The **Monitor en vivo** tab connects directly to NASA when the app opens:
+- **NASA POWER** daily rainfall (PRECTOTCORR), temperature (T2M) and solar radiation (ALLSKY_SFC_SW_DWN) at the Apacheta peatland;
+- **NASA CMR** catalog of the latest NISAR GCOV passes over the area (and the next expected pass, every 12 days).
+A daily water-balance model (Makkink evapotranspiration at 4,210 m, groundwater inflow, drainage) estimates the
+active-layer water reserve and is nudged to NISAR wetness whenever processed NISAR data are loaded.
+A GitHub Action (`.github/workflows/actualizar_datos.yml`) refreshes `datos/monitor.json` every day, so the
+monitor also works offline or if a live request fails. Run it manually from **Actions → Actualizar datos NASA → Run workflow**.
+
 ## Preview locally (Windows)
 Double-click `VER_APP_LOCAL.bat`: it starts a local server and opens http://localhost:8000.
 

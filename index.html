@@ -161,6 +161,44 @@ th{color:var(--text-2);font-weight:600;font-size:12px}
   .ticks{margin:2px 40px} .story{font-size:13.5px}
 }
 .grid>*{min-width:0} .prose{min-width:0;overflow-wrap:anywhere} pre{white-space:pre-wrap;word-break:break-word}
+.estado{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;margin-bottom:14px;font-size:14px;border:1px solid var(--line);background:var(--surface)}
+.estado .pt{width:12px;height:12px;border-radius:50%;flex:none}
+.mon-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+@media (max-width:700px){.mon-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.fuente{font-size:12px;color:var(--muted);margin-top:6px}
+.reporte-btn{border:1px solid var(--line);border-radius:999px;padding:7px 14px;background:var(--surface);color:var(--text);font-weight:600;font-size:13px;cursor:pointer}
+.reporte-btn:hover{border-color:var(--accent)}
+.ubic-map{position:relative;width:100%;aspect-ratio:16/10;border-radius:10px;overflow:hidden;background:var(--line);margin:6px 0 8px}
+.ubic-map iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ubic-map .sin{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;font-size:13px;color:var(--muted)}
+.ubic-txt{font-size:13.5px;line-height:1.5}
+.ubic-txt b{font-weight:600}
+#reporte{display:none}
+@media print{
+  @page{size:A4;margin:10mm}
+  html,body{background:#fff!important}
+  body>*:not(#reporte){display:none!important}
+  #reporte{display:block!important;color:#111;font:9pt/1.35 Inter,system-ui,sans-serif}
+  #reporte .cab{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #0f5c5c;padding-bottom:4px;margin-bottom:6px}
+  #reporte h1{font-size:15pt;margin:0;color:#0f5c5c} #reporte .cab .d{font-size:8pt;color:#555;text-align:right}
+  #reporte h2{font-size:9.5pt;margin:6px 0 3px;color:#0f5c5c;text-transform:uppercase;letter-spacing:.04em}
+  #reporte .fila{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
+  #reporte .mapa{position:relative;border-radius:5px;overflow:hidden;height:62mm;background:#dde}
+  #reporte .mapa img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #reporte .mapa .pt{position:absolute;left:50%;top:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:#e00;border:2px solid #fff;box-shadow:0 0 0 1px #e00}
+  #reporte .mapa .et{position:absolute;left:calc(50% + 10px);top:calc(50% - 9px);background:rgba(255,255,255,.88);padding:1px 5px;border-radius:3px;font-size:7.5pt;font-weight:600;color:#000}
+  #reporte .mapa .cr{position:absolute;right:3px;bottom:2px;font-size:6pt;color:#fff;text-shadow:0 0 2px #000}
+  #reporte .fila3{display:grid;grid-template-columns:.8fr 1.1fr 1.1fr;gap:8px;align-items:start}
+  #reporte .mapa.res{height:auto;max-height:86mm;margin:0 auto} #reporte .mapa.res img{object-fit:fill}
+  #reporte .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin:0 2px 0 5px;vertical-align:middle}
+  #reporte .rk{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+  #reporte .rk div{border:1px solid #ccd;border-radius:4px;padding:3px 6px;font-size:7.5pt;color:#444}
+  #reporte .rk b{display:block;font-size:12pt;color:#111}
+  #reporte .ver{margin:6px 0;padding:5px 8px;background:#eef5f4;border-left:3px solid #0f5c5c;font-size:9pt}
+  #reporte .fig svg{width:100%;height:auto;max-height:40mm} #reporte .fig .tip{display:none} #reporte .fig .leg{font-size:7pt}
+  #reporte .nota{font-size:7.5pt;color:#444;margin:2px 0}
+  #reporte .tag{font-size:7pt;color:#888;font-weight:400}
+}
 footer{max-width:1360px;margin:0 auto;padding:0 24px 30px;color:var(--muted);font-size:12px}
 </style>
 </head>
@@ -178,6 +216,7 @@ footer{max-width:1360px;margin:0 auto;padding:0 24px 30px;color:var(--muted);fon
     </div>
   </div>
   <span class="badge" id="badge"></span>
+  <button class="reporte-btn" id="btnReporte" type="button">📄 Reporte PDF</button>
   <button class="instalar" id="btnInstalar" type="button">📲 Instalar app</button>
 </header>
 <div class="aviso" id="aviso">Sin conexión: se muestran los últimos datos guardados en el celular.</div>
@@ -194,6 +233,7 @@ footer{max-width:1360px;margin:0 auto;padding:0 24px 30px;color:var(--muted);fon
 </div>
 <nav id="tabs">
   <a href="#explorar" data-v="explorar">Explorar</a>
+  <a href="#monitor" data-v="monitor">Monitor en vivo</a>
   <a href="#metodo" data-v="metodo">Cómo funciona</a>
   <a href="#datos" data-v="datos">Datos NISAR</a>
   <a href="#acerca" data-v="acerca">Acerca</a>
@@ -212,10 +252,12 @@ footer{max-width:1360px;margin:0 auto;padding:0 24px 30px;color:var(--muted);fon
           <button data-l="hh">HH</button>
           <button data-l="hv">HV</button>
         </div>
+        <label class="cmp" id="satLbl" title="Muestra dónde están el agua y los bofedales sobre una foto satelital real"><input type="checkbox" id="satOn"> 🛰️ Sobre satélite</label>
         <label class="cmp"><input type="checkbox" id="cmpOn"> Comparar con
           <select id="cmpDate"></select></label>
       </div>
       <div class="mapwrap" id="mapwrap">
+        <img id="satBg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:fill;display:none">
         <canvas id="map"></canvas>
         <div class="maplabel" id="labA" style="left:8px"></div>
         <div class="maplabel" id="labB" style="right:44px;display:none"></div>
@@ -224,6 +266,7 @@ footer{max-width:1360px;margin:0 auto;padding:0 24px 30px;color:var(--muted);fon
         <div class="scalebar" id="scale"><i></i><span></span></div>
       </div>
       <div class="legend" id="legend"></div>
+      <div class="fuente" id="satNota" style="display:none"></div>
       <div class="readout" id="readout">Pase el cursor o toque el mapa para ver los valores del radar.</div>
       <div class="timeline">
         <button class="play" id="play" aria-label="Reproducir">▶</button>
@@ -236,6 +279,12 @@ footer{max-width:1360px;margin:0 auto;padding:0 24px 30px;color:var(--muted);fon
     <div class="stack">
       <div class="kpis" id="kpis"></div>
       <div class="story" id="story"></div>
+      <div class="card">
+        <h3>¿Dónde está?</h3>
+        <div class="ubic-map" id="ubicMapaE"></div>
+        <div class="ubic-txt" id="ubicTxtE"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><a class="btn ubic-earth" target="_blank" rel="noopener" style="text-decoration:none">🌎 Abrir en Google Earth</a><a class="btn ubic-gmaps" target="_blank" rel="noopener" style="text-decoration:none">Google Maps</a></div>
+      </div>
       <div class="card">
         <h3>¿Cuánta agua entra y sale del bofedal?</h3>
         <p class="sub">Volumen que cambia en la temporada, en miles de m³. Haga clic en un punto para ver esa fecha.</p>
@@ -251,6 +300,47 @@ footer{max-width:1360px;margin:0 auto;padding:0 24px 30px;color:var(--muted);fon
         <div class="pgrid" id="pgrid"></div>
         <div style="margin-top:12px;display:flex;gap:8px"><button class="btn" id="resetP">Restablecer valores</button></div>
       </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MONITOR ============ -->
+<section class="view" id="v-monitor">
+  <div class="estado" id="monEstado"><span class="pt" style="background:var(--muted)"></span><span>Conectando con la NASA…</span></div>
+  <div class="mon-kpis" id="monKpis"></div>
+  <div class="grid">
+    <div class="stack">
+      <div class="card">
+        <h3>Reserva de agua de la capa activa del bofedal</h3>
+        <p class="sub">Porcentaje de su capacidad, día a día (últimos 120 días). Modelo de balance hídrico con datos NASA; se corrige con cada imagen NISAR procesada.</p>
+        <div class="chart" id="monChReserva"></div>
+      </div>
+      <div class="card">
+        <h3>Lluvia y evapotranspiración</h3>
+        <p class="sub">Agua que entra (lluvia, barras) y que sale por evaporación y transpiración (línea), en mm por día.</p>
+        <div class="chart" id="monChBalance"></div>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="card">
+        <h3>¿Dónde está?</h3>
+        <div class="ubic-map" id="ubicMapaM"></div>
+        <div class="ubic-txt" id="ubicTxtM"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><a class="btn ubic-earth" target="_blank" rel="noopener" style="text-decoration:none">🌎 Abrir en Google Earth</a><a class="btn ubic-gmaps" target="_blank" rel="noopener" style="text-decoration:none">Google Maps</a></div>
+      </div>
+      <div class="card">
+        <h3>Pasadas del radar NISAR sobre el área</h3>
+        <p class="sub">Catálogo oficial de la NASA (CMR), colección NISAR_L2_GCOV_PROVISIONAL_V1.</p>
+        <div style="overflow-x:auto"><table id="monNisar"></table></div>
+        <p class="fuente" id="monProx"></p>
+      </div>
+      <div class="card">
+        <h3>Cómo se calcula</h3>
+        <p class="sub" style="margin-bottom:6px">Cada día: reserva = reserva de ayer + lluvia + aporte subterráneo − evapotranspiración − salida al río. La evapotranspiración se calcula con la temperatura y la radiación solar (método de Makkink, corregido a la altitud del bofedal). Cuando hay una imagen NISAR procesada, la reserva se ajusta a la humedad que midió el radar.</p>
+        <p class="fuente" id="monFuente"></p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn pri" id="monActualizar" type="button">Actualizar ahora</button><a class="btn" href="https://power.larc.nasa.gov/" style="text-decoration:none">NASA POWER</a><a class="btn" href="https://search.earthdata.nasa.gov/search?q=NISAR_L2_GCOV_PROVISIONAL_V1" style="text-decoration:none">Earthdata Search</a></div>
+        <p class="warn" style="margin-top:10px">Prototipo: los umbrales de alerta y los parámetros del modelo son provisionales hasta calibrarlos con piezómetros en campo.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -374,7 +464,7 @@ function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a
 
 /* ===================== parámetros (idénticos al script) ===================== */
 const PDEF = {agua_hh_max:-16, agua_hv_max:-20, bof_hh_min:-9, bof_frec_min:0.30, rango_min_db:1.5,
-  turba_m:2.0, capa_activa_m:0.5, theta_sat:0.90, theta_min:0.55, prof_agua_m:1.0, elev_min:3800, pend_max:15};
+  turba_m:2.0, capa_activa_m:0.5, theta_sat:0.90, theta_min:0.55, prof_agua_m:1.0, elev_min:3800, pend_max:15, aporte_mm:1.0};
 const PSPEC = [
   ["h","Clasificación del radar"],
   ["agua_hh_max","Agua: HH máximo",-24,-10,0.1,"dB"],
@@ -390,6 +480,7 @@ const PSPEC = [
   ["theta_sat","Agua en turba saturada (θ sat)",0.6,0.97,0.01,"m³/m³"],
   ["theta_min","Agua en turba más seca (θ mín)",0.2,0.85,0.01,"m³/m³"],
   ["prof_agua_m","Profundidad media de lagunas",0.2,5,0.1,"m"],
+  ["aporte_mm","Aporte de agua subterránea y laderas (monitor)",0,4,0.1,"mm/día"],
 ];
 let PBASE = {...PDEF}; let P = {...PDEF};
 
@@ -457,7 +548,7 @@ function decodeI16(b64,N){const bin=atob(b64),u=new Uint8Array(bin.length);for(l
 function fromJson(j){
   if(j.formato!=="yaku-1") throw new Error("El archivo no tiene formato yaku-1 (¿lo generó Yaku_v05.py?)");
   const W=j.ancho,H=j.alto,N=W*H;
-  return {sitio:j.sitio||"Bofedal",demo:false,W,H,px:j.pixel_m,params:j.parametros||null,dates:j.fechas,orbitas:j.orbitas||[],
+  return {sitio:j.sitio||"Bofedal",demo:false,W,H,px:j.pixel_m,params:j.parametros||null,dates:j.fechas,orbitas:j.orbitas||[],epsg:j.epsg||null,
     hh:j.hh.map(b=>decodeI16(b,N)),hv:j.hv.map(b=>decodeI16(b,N)),bbox:j.bbox,
     dem:j.dem?decodeI16(j.dem,N).map(v=>v*100):null, pend:j.pend?decodeI16(j.pend,N).map(v=>v*10):null};
 }
@@ -499,11 +590,11 @@ function analyze(){
 /* ===================== render del mapa ===================== */
 const cv=$("#map"), ctx=cv.getContext("2d");
 const off=[document.createElement("canvas"),document.createElement("canvas")];
-let state={t:0,layer:"clasif",cmp:false,tB:0,swipe:0.5,playing:null};
+let state={t:0,layer:"clasif",cmp:false,tB:0,swipe:0.5,playing:null,sat:false};
 const RAMP=["#cde2fb","#9ec5f4","#6da7ec","#3987e5","#256abf","#184f95","#0d366b"].map(hex2rgb);
 function rampAt(u){u=clamp(u,0,1)*(RAMP.length-1);const k=Math.min(Math.floor(u),RAMP.length-2),f=u-k,a=RAMP[k],b=RAMP[k+1];return [a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f];}
 const lin=(v,a,b)=>clamp((v-a)/(b-a),0,1)*255;
-function paint(canvas,t){
+function paint(canvas,t,transp=state.sat){
   const {W,H}=D,N=W*H; canvas.width=W;canvas.height=H;
   const c2=canvas.getContext("2d"),img=c2.createImageData(W,H),d=img.data;
   const hh=D.hh[t],hv=D.hv[t],cl=R.cls[t],sm=R.smi[t];
@@ -515,10 +606,11 @@ function paint(canvas,t){
       case "hv": r=g=b=lin(hv[i],-33,-9);break;
       case "rgb": r=lin(v,-22,-2);g=lin(hv[i],-30,-10);b=lin(v-hv[i],3,13);break;
       case "smi": { const k=cl[i];
-        if(k===2||k===3){[r,g,b]=rampAt(sm[i]);}
-        else if(k===4){r=22;g=24;b=28;}
-        else {const gr=lin(v,-25,-2)*0.55+40;r=g=b=gr;} break; }
+        if(k===2||k===3){[r,g,b]=rampAt(sm[i]);if(transp)a=225;}
+        else if(k===4){r=22;g=24;b=28;if(transp){[r,g,b]=[0,90,255];a=235;}}
+        else {const gr=lin(v,-25,-2)*0.55+40;r=g=b=gr;if(transp)a=0;} break; }
       default: { const k=cl[i];
+        if(transp){ if(k===4){[r,g,b]=[0,90,255];a=240;} else if(k===3){[r,g,b]=[0,230,160];a=215;} else if(k===2){[r,g,b]=[255,214,0];a=190;} else a=0; break; }
         if(k===4)[r,g,b]=cW; else if(k===3)[r,g,b]=cB; else if(k===2)[r,g,b]=cBd;
         else if(k===5){const gr=lin(v,-22,-4)*0.35+90;r=g=b=gr;}
         else {const s=lin(v,-20,-6)/255; r=cP[0]*(0.82+0.18*s); g=cP[1]*(0.82+0.18*s); b=cP[2]*(0.82+0.18*s);} }
@@ -533,11 +625,12 @@ function drawMap(){
   wrap.style.aspectRatio=`${D.W}/${D.H}`;
   ctx.imageSmoothingEnabled=false;
   paint(off[0],state.t); ctx.drawImage(off[0],0,0,cv.width,cv.height);
+  if(state.sat&&!state.cmp) marcarPuntos(ctx,state.t,cv.width/D.W,7*dpr);
   $("#labA").textContent=fmtDate(D.dates[state.t],true);
   if(state.cmp){
     paint(off[1],state.tB);
     const sx=Math.round(state.swipe*cv.width);
-    ctx.save();ctx.beginPath();ctx.rect(sx,0,cv.width-sx,cv.height);ctx.clip();ctx.drawImage(off[1],0,0,cv.width,cv.height);ctx.restore();
+    ctx.save();ctx.beginPath();ctx.rect(sx,0,cv.width-sx,cv.height);ctx.clip();ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(off[1],0,0,cv.width,cv.height);ctx.restore();
     $("#swipe").style.display="block";$("#swipe").style.left=`calc(${state.swipe*100}% - 1px)`;
     $("#labB").style.display="block";$("#labB").textContent=fmtDate(D.dates[state.tB],true);
   } else {$("#swipe").style.display="none";$("#labB").style.display="none";}
@@ -548,11 +641,44 @@ function drawMap(){
 function drawLegend(){
   const L=$("#legend");
   const sw=c=>`<i style="background:${c}"></i>`;
+  if(state.sat&&(state.layer==="clasif")) { L.innerHTML=`<span>${sw("#005aff")}Agua abierta (lagunas, ríos)</span><span>${sw("#00e6a0")}Bofedal saturado</span><span>${sw("#ffd600")}Bofedal menos húmedo</span><span><i style="background:transparent;border:2px solid #e00;border-radius:50%"></i>Zona con reserva de agua</span><span>Fondo: imagen satelital real</span>`; return; }
   if(state.layer==="clasif") L.innerHTML=`<span>${sw("var(--water)")}Agua abierta</span><span>${sw("var(--bof)")}Bofedal saturado</span><span>${sw("var(--bof-dry)")}Bofedal menos húmedo</span><span>${sw("var(--puna)")}Puna (zona alta y plana)</span>`+(D.dem?`<span>${sw("#7a7a7a")}Bajo ${P.elev_min} m o pendiente &gt; ${P.pend_max} %</span>`:"");
   else if(state.layer==="smi") L.innerHTML=`<span>Humedad del bofedal: más seco<span class="ramp" style="background:linear-gradient(90deg,#cde2fb,#6da7ec,#256abf,#0d366b)"></span>más húmedo</span><span>${sw("#16181c")}Agua abierta</span><span>Gris: fuera del bofedal</span>`;
   else if(state.layer==="rgb") L.innerHTML=`<span>Rojo = HH · Verde = HV · Azul = HH/HV. Verde claro: bofedal húmedo; negro: agua; magenta: suelo y roca.</span>`;
   else L.innerHTML=`<span>Retrodispersión ${state.layer.toUpperCase()} (γ⁰, dB): oscuro = eco débil (agua lisa); claro = eco fuerte (vegetación húmeda, laderas que miran al radar).</span>`;
 }
+
+/* ===================== FONDO SATELITAL (Esri World Imagery) ===================== */
+// Puntos de reserva: agrupa píxeles de agua/bofedal en celdas y devuelve sus centros (para marcarlos con un círculo)
+function puntosReserva(t){
+  const {W,H}=D, cl=R.cls[t], c=Math.max(12,Math.round(Math.max(W,H)/10)), apx=D.px*D.px, cel=new Map();
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){const k=cl[y*W+x]; if(k<2||k>4) continue;
+    const id=((y/c)|0)*1e5+((x/c)|0); let e=cel.get(id); if(!e){e={sx:0,sy:0,n:0,agua:0};cel.set(id,e);} e.sx+=x;e.sy+=y;e.n++; if(k===4)e.agua++;}
+  const min=Math.max(5,Math.round(5e4/apx));   // al menos ~5 ha por celda
+  return [...cel.values()].filter(e=>e.n>=min).map(e=>({x:e.sx/e.n,y:e.sy/e.n,ha:e.n*apx/1e4,agua:e.agua>e.n*0.3})).sort((a,b)=>b.ha-a.ha).slice(0,15);
+}
+function marcarPuntos(c2,t,esc,r){
+  c2.save(); c2.lineWidth=Math.max(1.5,r/3.5);
+  puntosReserva(t).forEach(p=>{c2.beginPath();c2.arc(p.x*esc,p.y*esc,r,0,2*Math.PI);c2.strokeStyle="#fff";c2.lineWidth=Math.max(2.5,r/2.2);c2.stroke();c2.strokeStyle="#e00";c2.lineWidth=Math.max(1.5,r/3.5);c2.stroke();});
+  c2.restore();
+}
+function satUrl(bb,W,H,maxPx=1024){
+  const k=maxPx/Math.max(W,H), w=Math.round(W*k), h=Math.round(H*k), sr=(D&&D.epsg)||3857;
+  return `https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bb.join(",")}&bboxSR=4326&imageSR=${sr}&size=${w},${h}&format=jpg&f=image`;
+}
+function actualizarSat(){
+  const real=D&&!D.demo&&Array.isArray(D.bbox)&&D.bbox.length===4;
+  const cb=$("#satOn"), img=$("#satBg"), nota=$("#satNota");
+  cb.disabled=!real; $("#satLbl").style.opacity=real?1:.5;
+  if(!real){ state.sat=false; cb.checked=false; img.style.display="none";
+    nota.style.display="block"; nota.textContent="🛰️ La vista «Sobre satélite» se activa al cargar sus datos NISAR reales (pestaña Datos NISAR): la escena de demostración es simulada y no corresponde a un lugar real."; return; }
+  nota.style.display=state.sat?"block":"none";
+  nota.textContent="Imagen de fondo: Esri World Imagery (foto óptica, puede ser de otra fecha). Colores: lo que detectó el radar NISAR en la fecha elegida. Ubicación aproximada (± 1 píxel).";
+  if(state.sat){ const u=satUrl(D.bbox,D.W,D.H); if(img.dataset.u!==u){img.dataset.u=u; img.src=u;} img.style.display="block"; }
+  else img.style.display="none";
+}
+$("#satOn").addEventListener("change",e=>{state.sat=e.target.checked; if(state.sat&&state.layer!=="clasif"&&state.layer!=="smi"){state.layer="clasif";$("#layers").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x.dataset.l==="clasif"));} actualizarSat(); drawMap(); drawLegend();});
+$("#satBg").addEventListener("error",()=>{$("#satNota").textContent="No se pudo cargar la imagen satelital (sin internet). Las áreas de agua se muestran igual.";});
 
 /* ===================== KPIs, historia, gráficos ===================== */
 function kpis(){
@@ -644,7 +770,7 @@ function buildParams(){
   showP();
 }
 function showP(){["elev_min","pend_max"].forEach(k=>{const el=$("#p_"+k);if(el)el.disabled=!(D&&D.dem);});PSPEC.filter(s=>s[0]!=="h").forEach(s=>{const v=P[s[0]];$("#p_"+s[0]).value=v;$("#pv_"+s[0]).textContent=s[5]==="%"?Math.round(v*100)+" %":`${v} ${s[5]}`;});}
-let raf=0; function schedule(){cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{analyze();refresh();});}
+let raf=0; function schedule(){cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{analyze();refresh();if(MONI.datos)renderMonitor();});}
 function setT(i){state.t=clamp(i,0,D.dates.length-1);$("#tslider").value=state.t;refresh();}
 function refresh(){
   $("#dateBig").textContent=fmtDate(D.dates[state.t],true);
@@ -656,11 +782,13 @@ function loadData(d){
   $("#cmpDate").innerHTML=D.dates.map((x,i)=>`<option value="${i}">${fmtDate(x,true)}</option>`).join("");$("#cmpDate").value=state.tB;
   $("#ticks").innerHTML=`<span>${fmtDate(D.dates[0])}</span><span>${fmtDate(D.dates[D.dates.length-1])}</span>`;
   $("#badge").innerHTML=D.demo?`<b>Demostración</b> · escena sintética`:`<b>NISAR GCOV</b> · ${D.sitio}`;
-  analyze();refresh();
+  analyze();refresh(); if(typeof MONI!=="undefined"&&MONI.datos) renderMonitor(); try{renderUbicacion();}catch(e){} try{actualizarSat();drawLegend();}catch(e){}
 }
 
 $("#layers").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-  $("#layers").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));state.layer=b.dataset.l;drawMap();drawLegend();});
+  $("#layers").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));state.layer=b.dataset.l;
+  if(state.sat&&!["clasif","smi"].includes(state.layer)){state.sat=false;$("#satOn").checked=false;actualizarSat();}
+  drawMap();drawLegend();});
 $("#tslider").addEventListener("input",e=>setT(+e.target.value));
 $("#play").addEventListener("click",()=>{
   if(state.playing){clearInterval(state.playing);state.playing=null;$("#play").textContent="▶";return;}
@@ -705,7 +833,8 @@ document.querySelectorAll("pre .copy").forEach(b=>b.addEventListener("click",asy
   const txt=b.parentElement.textContent.replace(/^Copiar/,"").trim();try{await navigator.clipboard.writeText(txt);b.textContent="✓";setTimeout(()=>b.textContent="Copiar",1200);}catch(e){b.textContent="Seleccione";}}));
 
 // pestañas (hash)
-function route(){const v=(location.hash||"#explorar").slice(1);const ok=["explorar","metodo","datos","acerca"].includes(v)?v:"explorar";
+function route(){const v=(location.hash||"#explorar").slice(1);const ok=["explorar","monitor","metodo","datos","acerca"].includes(v)?v:"explorar";
+  if(ok==="monitor"&&!(window.MONI&&MONI.cargado))setTimeout(()=>cargarMonitor(false),0);
   document.querySelectorAll("section.view").forEach(s=>s.classList.toggle("on",s.id==="v-"+ok));
   document.querySelectorAll("#tabs a").forEach(a=>a.classList.toggle("on",a.dataset.v===ok));
   if(ok==="explorar"&&D)requestAnimationFrame(drawMap);}
@@ -713,6 +842,219 @@ window.addEventListener("hashchange",route);
 
 buildParams(); route();
 DEMO=makeDemo(); loadData(DEMO);
+
+/* ===================== MONITOR EN VIVO (NASA POWER + CMR) ===================== */
+const MON = {lat:-13.351, lon:-74.659, elev:4210, nombre:"Bofedal Apacheta · cabecera del río Cachi", bbox:[-74.85,-13.60,-74.30,-13.10]};
+var MONI = {cargado:false, datos:null, fuente:"", modelo:null};
+const PARS_P = ["PRECTOTCORR","T2M","T2M_MAX","T2M_MIN","ALLSKY_SFC_SW_DWN","RH2M"];
+const ymd = d => d.toISOString().slice(0,10);
+async function powerEnVivo(){
+  const fin=new Date(), ini=new Date(Date.now()-400*864e5), f=x=>ymd(x).replace(/-/g,"");
+  const url=`https://power.larc.nasa.gov/api/temporal/daily/point?parameters=${PARS_P.join(",")}&community=AG&latitude=${MON.lat}&longitude=${MON.lon}&start=${f(ini)}&end=${f(fin)}&format=JSON&site-elevation=${MON.elev}`;
+  const r=await fetch(url); if(!r.ok) throw new Error("POWER "+r.status);
+  const par=(await r.json()).properties.parameter, ks=Object.keys(par[PARS_P[0]]).sort();
+  const o={fechas:ks.map(k=>`${k.slice(0,4)}-${k.slice(4,6)}-${k.slice(6)}`)};
+  for(const p of PARS_P) o[p]=ks.map(k=>{const v=par[p][k];return (v==null||v<=-998)?null:v;});
+  return o;
+}
+async function nisarEnVivo(){
+  const ini=ymd(new Date(Date.now()-200*864e5));
+  const url=`https://cmr.earthdata.nasa.gov/search/granules.json?short_name=NISAR_L2_GCOV_PROVISIONAL_V1&bounding_box=${MON.bbox.join(",")}&temporal=${ini}T00:00:00Z,&sort_key=-start_date&page_size=100`;
+  const r=await fetch(url); if(!r.ok) throw new Error("CMR "+r.status);
+  const vis=new Set(), out=[];
+  for(const e of ((await r.json()).feed||{}).entry||[]){
+    const t=e.title||""; if(t.includes("QA_STATS")||vis.has(t)) continue; vis.add(t);
+    const p=t.split("_"), k=p.indexOf("GCOV");
+    out.push({fecha:(e.time_start||"").slice(0,10), titulo:t, track:k>=0?p[k+2]:null, dir:k>=0?p[k+3]:null});
+  }
+  return out;
+}
+function balance(pw){
+  // Parámetros físicos a 4 210 m
+  const Patm=101.3*Math.pow((293-0.0065*MON.elev)/293,5.26), gam=0.000665*Patm, lam=2.45;
+  const C=Math.max(P.capa_activa_m*(P.theta_sat-P.theta_min)*1000,1);   // capacidad de la capa activa (mm)
+  const kd=0.02;                                                       // salida diaria al río (fracción)
+  // Correcciones con NISAR (solo con datos reales cargados)
+  const obs={}; if(D&&!D.demo&&R) D.dates.forEach((d,i)=>{const h=R.res[i].humedad_media_pct; if(Number.isFinite(h)) obs[d]=h/100;});
+  let S=0.6*C, Plast=0, Tlast=8, Rlast=18; const out={fechas:[],f:[],P:[],ET:[],S:[],nisar:[]};
+  pw.fechas.forEach((d,i)=>{
+    const lluvia=pw.PRECTOTCORR[i], T=pw.T2M[i], Rs=pw.ALLSKY_SFC_SW_DWN[i];
+    const Pd=lluvia==null?0:lluvia, Td=T==null?Tlast:T, Rd=Rs==null?Rlast:Rs; if(T!=null)Tlast=T; if(Rs!=null)Rlast=Rs;
+    const es=0.6108*Math.exp(17.27*Td/(Td+237.3)), del=4098*es/Math.pow(Td+237.3,2);
+    const ET0=Math.max(0.61*del/(del+gam)*Rd/lam-0.12,0);
+    const f0=S/C, ETa=ET0*(0.4+0.6*f0);
+    S=S+Pd+P.aporte_mm-ETa-kd*S; S=clamp(S,0,C);   // los bofedales andinos se alimentan también de agua subterránea
+    if(obs[d]!=null){S=S+0.6*(obs[d]*C-S); out.nisar.push(out.fechas.length);}
+    out.fechas.push(d); out.P.push(lluvia==null?null:Pd); out.ET.push(ETa); out.S.push(S); out.f.push(S/C*100);
+  });
+  out.C=C; out.ultimoReal=(()=>{for(let i=pw.fechas.length-1;i>=0;i--) if(pw.PRECTOTCORR[i]!=null&&pw.T2M[i]!=null) return i; return pw.fechas.length-1;})();
+  return out;
+}
+function tsChart(el,{fechas,series,unit,dec=0,ymin=null,ymax=null,marcas=[]}){
+  const W=600,H=230,m={l:44,r:14,t:10,b:26},iw=W-m.l-m.r,ih=H-m.t-m.b,n=fechas.length;
+  const vals=series.flatMap(s=>s.values).filter(Number.isFinite);
+  let lo=ymin??Math.min(0,...vals), hi=ymax??(Math.max(...vals)*1.1||1);
+  const step=Math.pow(10,Math.floor(Math.log10((hi-lo)/4||1))), nice=[1,2,2.5,5,10].map(k=>k*step).find(k=>(hi-lo)/k<=5)||step*10;
+  if(ymax==null) hi=Math.ceil(hi/nice)*nice;
+  const X=i=>m.l+i*iw/Math.max(n-1,1), Y=v=>m.t+ih-(v-lo)/(hi-lo)*ih;
+  let g="";
+  for(let v=lo;v<=hi+1e-9;v+=nice) g+=`<line x1="${m.l}" x2="${m.l+iw}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${m.l-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${nf(v,0)}</text>`;
+  const cada=Math.ceil(n/6); fechas.forEach((d,i)=>{ if(i%cada===0) g+=`<text x="${X(i)}" y="${H-6}" text-anchor="middle" font-size="11" fill="var(--muted)">${fmtDate(d)}</text>`;});
+  marcas.forEach(i=>{g+=`<line x1="${X(i)}" x2="${X(i)}" y1="${m.t}" y2="${m.t+ih}" stroke="var(--s1)" stroke-dasharray="3 3"/><text x="${X(i)+3}" y="${m.t+10}" font-size="10" fill="var(--s1)">NISAR</text>`;});
+  series.forEach(s=>{
+    if(s.tipo==="barras"){const bw=Math.max(iw/n-1,1); s.values.forEach((v,i)=>{ if(Number.isFinite(v)&&v>0) g+=`<rect x="${X(i)-bw/2}" y="${Y(v)}" width="${bw}" height="${Y(lo)-Y(v)}" fill="${s.color}" opacity=".75"/>`;});}
+    else{let d="",pen=false; s.values.forEach((v,i)=>{ if(Number.isFinite(v)){d+=(pen?"L":"M")+X(i)+","+Y(v);pen=true;} else pen=false;}); g+=`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>`;}
+  });
+  g+=`<line class="cx" x1="0" x2="0" y1="${m.t}" y2="${m.t+ih}" stroke="var(--text-2)" stroke-dasharray="2 3" visibility="hidden"/><rect class="hz" x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" fill="transparent"/>`;
+  el.innerHTML=(series.length>1?`<div class="leg">${series.map(s=>`<span><i style="background:${s.color}"></i>${s.name}</span>`).join("")}</div>`:"")+`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${series.map(s=>s.name).join(", ")}">${g}</svg><div class="tip"></div>`;
+  const svg=el.querySelector("svg"), tip=el.querySelector(".tip"), cx=svg.querySelector(".cx"), hz=svg.querySelector(".hz");
+  const mover=e=>{const b=svg.getBoundingClientRect(),sc=b.width/W,x=(e.clientX-b.left)/sc,i=clamp(Math.round((x-m.l)/iw*(n-1)),0,n-1);
+    cx.setAttribute("x1",X(i));cx.setAttribute("x2",X(i));cx.setAttribute("visibility","visible");
+    tip.innerHTML=`<div class="d">${fmtDate(fechas[i],true)}</div>`+series.map(s=>`<div><i style="background:${s.color}"></i>${s.name}: <b>${Number.isFinite(s.values[i])?nf(s.values[i],dec):"–"}</b> ${unit}</div>`).join("");
+    tip.style.display="block"; tip.style.left=Math.min(X(i)*sc+12,el.clientWidth-tip.offsetWidth-4)+"px"; tip.style.top="30px";};
+  hz.addEventListener("pointermove",mover); hz.addEventListener("pointerdown",mover);
+  hz.addEventListener("pointerleave",()=>{tip.style.display="none";cx.setAttribute("visibility","hidden");});
+}
+function renderMonitor(){
+  const dt=MONI.datos; if(!dt||!dt.power) return;
+  const md=balance(dt.power); MONI.modelo=md;
+  const N=md.fechas.length, ini=Math.max(0,N-120), i=md.ultimoReal, sl=a=>a.slice(ini);
+  const real=D&&!D.demo&&R&&R.res.length, areaHa=real?R.res[R.res.length-1].area_bofedal_ha:14500.66;
+  const volMm3=areaHa*1e4*md.S[i]/1000/1e6, fhoy=md.f[i];
+  const ult7=k=>dt.power[k].slice(Math.max(0,i-6),i+1).filter(Number.isFinite);
+  const llu7=ult7("PRECTOTCORR").reduce((a,b)=>a+b,0), t7=ult7("T2M"), r7=ult7("ALLSKY_SFC_SW_DWN");
+  const tend=md.f[i]-md.f[Math.max(0,i-7)];
+  const [col,txt]= fhoy<30?["var(--lost)","Reserva baja: vigilancia prioritaria"]: fhoy<50?["#eda100","Reserva en descenso: vigilar"]:["var(--bof)","Reserva normal"];
+  $("#monEstado").innerHTML=`<span class="pt" style="background:${col}"></span><span><b>${txt}</b> · datos al ${fmtDate(md.fechas[i],true)} · ${MONI.fuente}</span>`;
+  const prox=proximaNisar(dt.nisar||[]);
+  $("#monKpis").innerHTML=[
+    ["Reserva de la capa activa",nf(fhoy,0)+"<small>%</small>",`${tend>=0?"▲":"▼"} ${nf(Math.abs(tend),1)} puntos en 7 días`],
+    ["Agua en la capa activa",nf(volMm3,1)+"<small>millones de m³</small>",real?`${nf(areaHa,0)} ha de bofedal medidas por NISAR`:"sobre 14 500 ha de bofedal (inventario 2013)"],
+    ["Lluvia últimos 7 días",nf(llu7,1)+"<small>mm</small>","NASA POWER"],
+    ["Temperatura media (7 días)",(t7.length?nf(t7.reduce((a,b)=>a+b,0)/t7.length,1):"–")+"<small>°C</small>","a 2 m, en el bofedal"],
+    ["Radiación solar (7 días)",(r7.length?nf(r7.reduce((a,b)=>a+b,0)/r7.length,1):"–")+"<small>MJ/m²/día</small>","energía para evaporar"],
+    ["Próxima pasada NISAR",prox?fmtDate(prox.fecha,true):"–",prox?`órbita ${prox.orbita} (cada 12 días)`:"sin datos de catálogo"],
+  ].map(([l,v,n])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="n">${n}</div></div>`).join("");
+  tsChart($("#monChReserva"),{fechas:sl(md.fechas),unit:"%",dec:0,ymin:0,ymax:100,series:[{name:"Reserva",color:cssv("--s2"),values:sl(md.f)}],marcas:md.nisar.filter(k=>k>=ini).map(k=>k-ini)});
+  tsChart($("#monChBalance"),{fechas:sl(md.fechas),unit:"mm/día",dec:1,series:[{name:"Lluvia",tipo:"barras",color:cssv("--s1"),values:sl(md.P)},{name:"Evapotranspiración",color:"#eb6834",values:sl(md.ET)}]});
+  const pas=[...(dt.nisar||[])].sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,8);
+  $("#monNisar").innerHTML=`<tr><th>Fecha</th><th>Órbita</th><th>Procesada en YAKU</th></tr>`+(pas.length?pas.map(x=>`<tr><td>${fmtDate(x.fecha,true)}</td><td>${x.track?Number(x.track)+"-"+x.dir:"–"}</td><td>${real&&D.dates.includes(x.fecha)?"Sí":"No"}</td></tr>`).join(""):`<tr><td colspan="3">Sin pasadas en el catálogo para este periodo.</td></tr>`);
+  $("#monProx").textContent=prox?`Próxima pasada estimada: ${fmtDate(prox.fecha,true)} (órbita ${prox.orbita}). NISAR repite cada órbita cada 12 días.`:"";
+  $("#monFuente").textContent=`Fuente: ${MONI.fuente}. Clima: NASA POWER (lluvia corregida PRECTOTCORR, temperatura T2M, radiación ALLSKY_SFC_SW_DWN) en ${MON.lat}, ${MON.lon}. Radar: NASA CMR. Actualizado: ${dt.actualizado?new Date(dt.actualizado).toLocaleString("es-PE"):"–"}.`;
+}
+function proximaNisar(lista){
+  const hoy=new Date(ymd(new Date())), ult={};
+  lista.forEach(x=>{ if(!x.track) return; const k=Number(x.track)+"-"+x.dir; if(!ult[k]||x.fecha>ult[k]) ult[k]=x.fecha; });
+  let mejor=null;
+  for(const [k,f] of Object.entries(ult)){ let d=new Date(f); while(d<=hoy) d=new Date(d.getTime()+12*864e5);
+    if(!mejor||d<mejor.d) mejor={d,fecha:ymd(d),orbita:k}; }
+  return mejor;
+}
+async function cargarMonitor(forzar){
+  MONI.cargado=true; $("#monEstado").innerHTML=`<span class="pt" style="background:var(--muted)"></span><span>Conectando con la NASA…</span>`;
+  let dt=null;
+  try{ const [pw,ni]=await Promise.all([powerEnVivo(), nisarEnVivo().catch(()=>null)]);
+       dt={power:pw,nisar:ni||[],actualizado:new Date().toISOString()}; MONI.fuente="en vivo desde la NASA";
+       if(!ni){ try{const r=await fetch("datos/monitor.json",{cache:"no-cache"}); if(r.ok) dt.nisar=(await r.json()).nisar||[];}catch(e){} }
+  }catch(e){
+    try{ const r=await fetch("datos/monitor.json",{cache:forzar?"no-cache":"default"}); if(!r.ok) throw new Error(r.status);
+         dt=await r.json(); MONI.fuente="actualización automática diaria (GitHub)"; }
+    catch(e2){ $("#monEstado").innerHTML=`<span class="pt" style="background:var(--lost)"></span><span>No se pudo conectar con la NASA. Abra la app publicada en GitHub con internet; en esta vista previa las conexiones externas pueden estar bloqueadas.</span>`; return; }
+  }
+  MONI.datos=dt; renderMonitor();
+}
+$("#monActualizar").addEventListener("click",()=>cargarMonitor(true));
+
+/* ===================== UBICACIÓN (Google Maps satelital / Google Earth) ===================== */
+const LUGAR = {region:"Ayacucho", provincia:"Huamanga", zona:"Cabecera del río Cachi (Apacheta – Vinchos)", pais:"Perú"};
+function zonaActual(){
+  const bb=(D&&!D.demo&&Array.isArray(D.bbox)&&D.bbox.length===4)?D.bbox:MON.bbox;
+  const lon=(bb[0]+bb[2])/2, lat=(bb[1]+bb[3])/2, ext=Math.max(Math.abs(bb[2]-bb[0]),Math.abs(bb[3]-bb[1]));
+  const zoom=clamp(Math.round(Math.log2(360/ext))-0,6,15);
+  const kmX=Math.abs(bb[2]-bb[0])*111.32*Math.cos(lat*Math.PI/180), kmY=Math.abs(bb[3]-bb[1])*110.57;
+  return {bb,lat,lon,zoom,kmX,kmY,alt:Math.round(ext*111e3*1.6)};
+}
+let ubicClave="";
+function renderUbicacion(){
+  const z=zonaActual(), clave=z.bb.join(",");
+  const earth=`https://earth.google.com/web/@${z.lat.toFixed(4)},${z.lon.toFixed(4)},4200a,${z.alt}d,35y,0h,45t,0r`;
+  const gmaps=`https://www.google.com/maps/@?api=1&map_action=map&center=${z.lat.toFixed(4)},${z.lon.toFixed(4)}&zoom=${z.zoom}&basemap=satellite`;
+  const ns=v=>`${Math.abs(v).toFixed(3)}° ${v<0?"S":"N"}`, ew=v=>`${Math.abs(v).toFixed(3)}° ${v<0?"O":"E"}`;
+  const txt=`<b>${LUGAR.pais} · Región ${LUGAR.region} · Provincia ${LUGAR.provincia}</b><br>${LUGAR.zona}<br>
+    Centro: ${ns(z.lat)}, ${ew(z.lon)} · Área analizada ≈ ${nf(z.kmX,0)} × ${nf(z.kmY,0)} km<br>
+    <span style="color:var(--muted);font-size:12px">Ubicación aproximada. Bofedal de referencia: Apacheta, 4 210 m s. n. m.</span>`;
+  ["E","M"].forEach(k=>{
+    const m=$("#ubicMapa"+k); if(!m) return;
+    $("#ubicTxt"+k).innerHTML=txt;
+    m.closest(".card").querySelector(".ubic-earth").href=earth;
+    m.closest(".card").querySelector(".ubic-gmaps").href=gmaps;
+    if(ubicClave===clave && m.querySelector("iframe")) return;
+    if(!navigator.onLine){ m.innerHTML=`<div class="sin">Sin conexión: el mapa satelital aparecerá cuando haya internet.</div>`; return; }
+    m.innerHTML=`<div class="sin">Cargando mapa satelital…</div><iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa satelital de la zona"
+      src="https://maps.google.com/maps?q=${z.lat.toFixed(4)},${z.lon.toFixed(4)}&t=h&z=7&hl=es&output=embed"></iframe>`;
+  });
+  ubicClave=clave;
+}
+window.addEventListener("online",()=>{ubicClave="";renderUbicacion();});
+renderUbicacion();
+
+/* ===================== REPORTE PDF ===================== */
+const esc=t=>String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+async function generarReporte(){
+  const b=$("#btnReporte"); b.disabled=true; b.textContent="⏳ Preparando…";
+  try{
+    if(!MONI.datos){ try{ await cargarMonitor(false); }catch(e){} }
+    const z=zonaActual(), hoy=new Date(), demo=!D||D.demo, all=R.res, r=all[all.length-1];
+    const act=all.map(x=>x.vol_capa_activa_m3+x.vol_superficial_m3), reg=Math.max(...act)-Math.min(...act);
+    const svgDe=sel=>{const s=$(sel)&&$(sel).querySelector("svg"); return s?s.outerHTML:"";};
+    // mapa de contexto: ±4.5° lon, ±3° lat alrededor de la zona (se ve el país y la región)
+    const cb=[z.lon-4.5,z.lat-3,z.lon+4.5,z.lat+3].map(v=>v.toFixed(3)).join(",");
+    const ex=(srv,fmt)=>`https://services.arcgisonline.com/arcgis/rest/services/${srv}/MapServer/export?bbox=${cb}&bboxSR=4326&imageSR=4326&size=900,600&format=${fmt}&transparent=true&f=image`;
+    const oc=document.createElement("canvas"), capaAnt=state.layer; state.layer="clasif"; paint(oc,all.length-1,true); state.layer=capaAnt;
+    { const g=document.createElement("canvas"), f=Math.max(1,Math.round(900/D.W)); g.width=D.W*f; g.height=D.H*f; const c2=g.getContext("2d"); c2.imageSmoothingEnabled=false; c2.drawImage(oc,0,0,g.width,g.height); marcarPuntos(c2,all.length-1,f,g.width/70); oc.width=g.width; oc.height=g.height; oc.getContext("2d").drawImage(g,0,0); }
+    if(demo){const c2=oc.getContext("2d"); c2.globalCompositeOperation="destination-over"; c2.fillStyle="#3b3b33"; c2.fillRect(0,0,oc.width,oc.height);}
+    const capa=oc.toDataURL("image/png");
+    const md=MONI.modelo, k=(lbl)=>{const e=[...document.querySelectorAll("#monKpis .kpi")].find(x=>x.querySelector(".l").innerText===lbl); return e?e.querySelector(".v").innerText.replace(/\n/g," "):"–";};
+    const estado=md?$("#monEstado").innerText.split("·")[0].trim():"";
+    $("#reporte").innerHTML=`
+      <div class="cab"><div><h1>YAKU · Reservas hídricas de bofedales</h1>
+        <div>${LUGAR.pais} · Región ${LUGAR.region} · Provincia ${LUGAR.provincia} · ${LUGAR.zona} ${demo?'<span class="tag">· datos de demostración</span>':""}</div></div>
+        <div class="d">${hoy.toLocaleDateString("es-PE",{day:"numeric",month:"long",year:"numeric"})}<br>NASA Space Apps 2026 · HIDROTECH</div></div>
+      <div class="fila">
+        <div><h2>Ubicación</h2>
+          <div class="mapa"><img src="${ex("World_Imagery","jpg")}" alt="" onerror="this.remove()"><img src="${ex("Reference/World_Boundaries_and_Places","png32")}" alt="" onerror="this.remove()">
+            <span class="pt"></span><span class="et">Zona de estudio · ${LUGAR.provincia}, ${LUGAR.region}</span><span class="cr">Esri World Imagery</span></div>
+          <p class="nota">Centro ${Math.abs(z.lat).toFixed(3)}° S, ${Math.abs(z.lon).toFixed(3)}° O · área ≈ ${nf(z.kmX,0)} × ${nf(z.kmY,0)} km · bofedal de referencia Apacheta, 4 210 m s. n. m.</p></div>
+        <div><h2>Indicadores clave</h2>
+          <div class="rk">
+            <div>Agua almacenada (turba + lagunas)<b>${nf(r.vol_total_m3/1e6,2)} Mm³</b>${fmtDate(r.fecha,true)} · NISAR</div>
+            <div>Agua que varía en la temporada<b>${nf(reg/1e3,0)} mil m³</b>≈ ${nf(reg/2500,0)} piscinas olímpicas</div>
+            <div>Área de bofedal<b>${nf(r.area_bofedal_ha,1)} ha</b>${nf(r.area_agua_ha,1)} ha de espejos de agua</div>
+            <div>Humedad relativa del bofedal<b>${nf(r.humedad_media_pct,0)} %</b>0 = más seco · 100 = más húmedo</div>
+            <div>Reserva actual (monitor)<b>${k("Reserva de la capa activa")}</b>${md?"datos al "+fmtDate(md.fechas[md.ultimoReal],true):"sin conexión NASA"}</div>
+            <div>Lluvia últimos 7 días<b>${k("Lluvia últimos 7 días")}</b>Próxima pasada NISAR: ${k("Próxima pasada NISAR")}</div>
+          </div></div>
+      </div>
+      <div class="ver"><b>Diagnóstico${estado?": "+estado:""}.</b> ${esc($("#story").innerText)}</div>
+      <div class="fila">
+        <div class="fig"><h2>Áreas de reserva de agua · ${fmtDate(r.fecha,true)}</h2>
+          <div class="mapa res" style="aspect-ratio:${D.W}/${D.H}">${demo?"":`<img src="${satUrl(D.bbox,D.W,D.H,900)}" alt="" onerror="this.remove()">`}<img src="${capa}" alt="" style="image-rendering:pixelated"></div>
+          <p class="nota"><i class="sw" style="background:#005aff"></i>agua <i class="sw" style="background:#00e6a0"></i>bofedal saturado <i class="sw" style="background:#ffd600"></i>bofedal menos húmedo <i class="sw" style="background:#fff;border:1.5px solid #e00;border-radius:50%"></i>zona con reserva${demo?" · escena simulada":" · fondo Esri"}</p></div>
+        <div><div class="fig"><h2>Agua que entra y sale (mil m³)</h2>${svgDe("#chVol")}</div>
+        <div class="fig"><h2>Reserva diaria (% capacidad)</h2>${md?svgDe("#monChReserva"):'<p class="nota">Sin conexión con la NASA al generar el reporte.</p>'}</div></div>
+      </div>
+      <h2>Método</h2>
+      <p class="nota">Radar NISAR (L2 GCOV, bandas HH/HV): agua libre si HH &lt; ${P.agua_hh_max} dB; bofedal si HH ≥ ${P.bof_hh_min} dB, &gt; ${P.elev_min} m y pendiente ≤ ${P.pend_max} %. Volumen = área × [turba saturada + capa activa × humedad] + lagunas. Monitor diario: reserva = anterior + lluvia + aporte subterráneo − evapotranspiración (Makkink) − drenaje, ajustado con cada imagen NISAR.</p>
+      <p class="nota"><b>Limitaciones:</b> prototipo; espesor de turba, porosidad y umbrales por calibrar con piezómetros. <b>Fuentes:</b> NASA/ISRO NISAR (ASF DAAC), NASA POWER, NASA CMR, Copernicus DEM, inventario Cachi (Chávez 2015), Esri. Elaborado con asistencia de IA (Claude, Anthropic) y revisado por el equipo.</p>`;
+    const imgs=[...$("#reporte").querySelectorAll("img")];
+    await Promise.race([Promise.all(imgs.map(im=>im.complete?1:new Promise(ok=>{im.onload=im.onerror=ok;}))), new Promise(ok=>setTimeout(ok,6000))]);
+    const t0=document.title; document.title=`YAKU_reporte_${ymd(hoy)}`;
+    window.print();
+    setTimeout(()=>{document.title=t0;},1500);
+  }catch(e){ alert("No se pudo generar el reporte: "+e.message); }
+  finally{ b.disabled=false; b.textContent="📄 Reporte PDF"; }
+}
+$("#btnReporte").addEventListener("click",generarReporte);
 
 /* ===================== app instalable (PWA) ===================== */
 const esWeb = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
@@ -749,5 +1091,6 @@ if (esWeb) {
   })();
 }
 </script>
+<div id="reporte"></div>
 </body>
 </html>
