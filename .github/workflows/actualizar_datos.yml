@@ -1,0 +1,27 @@
+name: Actualizar datos NASA (YAKU Monitor)
+
+on:
+  schedule:
+    - cron: "23 11 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Descargar clima (NASA POWER) y pasadas NISAR (NASA CMR)
+        run: python scripts/actualizar_monitor.py
+      - name: Guardar datos/monitor.json
+        run: |
+          git config user.name "yaku-bot"
+          git config user.email "yaku-bot@users.noreply.github.com"
+          git add datos/monitor.json
+          git diff --cached --quiet || git commit -m "Datos NASA actualizados $(date -u +%F)"
+          git push
