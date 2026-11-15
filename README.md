@@ -1,65 +1,66 @@
-# YAKU – Measuring the water stored in Andean peatlands with NISAR radar
+# YAKU v6 – Measuring the water stored in mountain wetlands with NISAR radar
 
-**Team HIDROTECH · NASA Space Apps Challenge 2026 · Challenge: "Dancing with SARs" (Earth Science)**
+**Team YAKU – HIDROTECH · NASA Space Apps Challenge 2026 · Challenge: "Dancing with SARs" (Earth Science)**
 
-YAKU ("water" in Quechua) uses NASA–ISRO **NISAR** L-band radar to map high-Andean peatlands (*bofedales*),
-track their wetness through the seasons and estimate how much water they store. Pilot area: the headwaters
-of the **Cachi River**, main water source of Ayacucho city (Huamanga, Peru).
+YAKU ("water" in Quechua) uses NASA–ISRO **NISAR** L-band radar to map high-Andean peatlands (*bofedales*)
+and other mountain wetlands, track their wetness through the seasons and estimate how much water they store.
+It works for **any area, region or country**. Pilot site: the headwaters of the Cachi River (Ayacucho, Peru).
 
-- **Live app (installable on any phone, no app store):** the GitHub Pages link of this repository
-- **Processing tool:** `Yaku_v05.py` (Windows: double-click `INICIAR_YAKU_v05.bat`)
+- **Live app (installable on any phone, no app store):** https://deserteaglepmp.github.io/Yaku_PMP_github/
+- **Language:** English by default, full Spanish with the **ES** button.
+- **Processing tool:** `Yaku_v06.py` (Windows: double-click `INICIAR_YAKU_v06.bat`)
 - **Project report (Spanish):** `docs/YAKU_Proyecto_NASA_SpaceApps_2026_v3.docx`
+
+## What's in the app (v6)
+| Tab | What it does |
+|---|---|
+| **Explore map** (opens first) | Layered NISAR map (water & wetland, moisture, false colour, HH, HV), timeline, before/after slider, KPIs, wetland "sponge" diagram, validation against a reference inventory, per-audience guidance |
+| **Live monitor** | Daily water balance for **any site** (enter name, coordinates, elevation, area) with NASA POWER climate and NASA CMR NISAR passes; reserve traffic light |
+| **NISAR data** | How to download and process real data; load `yaku_*.json`; results table (copy as CSV) |
+| **About the program** | Problem, solution and 5-step workflow |
+| **Who it's for** | Researchers, public agencies, mining companies, communities & water managers |
+| **How it works** | Data-flow diagram, radar scattering diagram, formulas and caveats |
+| **Business model** | Plans, business model canvas, editable 3-year projection, sustainability and SDGs |
+| **NASA resources** | Every NASA / partner-agency resource and how YAKU uses it |
+| **Team & AI** | Team YAKU – HIDROTECH, roadmap, AI-use statement, sources |
 
 ## How it works
 1. Search and download calibrated NISAR L2 **GCOV** products (HH/HV, γ⁰) from ASF for one orbit (`asf_search`).
-2. Crop, multilook to 60 m, convert to dB; mask terrain with the **Copernicus DEM** (≥ 3,800 m, slope ≤ 15 %).
-3. Classify open water (Otsu threshold on HH) and saturated peatland (HH ≥ −9 dB); compute a relative wetness index.
-4. Convert to volumes: peatland area × peat thickness × water content + lake area × depth.
-5. Visualize in the web app: layered map, animated timeline, before/after slider, indicators and charts.
+2. Crop, multilook (e.g. 60 m), convert to dB; mask terrain with the **Copernicus DEM** (≥ 3,800 m, slope ≤ 15 %).
+3. Classify open water (Otsu threshold on HH) and saturated wetland (HH ≥ −9 dB); compute a relative wetness index.
+4. Convert to volumes: wetland area × peat thickness × water content + open-water area × depth.
+5. Daily monitor: water balance with NASA POWER (rain PRECTOTCORR, temperature T2M, radiation ALLSKY_SFC_SW_DWN;
+   Makkink evapotranspiration), nudged to NISAR wetness whenever processed NISAR data are loaded.
 
-**YAKU Monitor (design):** a daily water-balance model (rainfall from GPM IMERG; evapotranspiration from
-temperature, solar radiation and vegetation) corrected with each NISAR acquisition, plus IoT field sensors,
-to monitor water reserves in near real time and scale to mountain wetlands worldwide.
-
-## Live monitor (automatic NASA data)
-The **Monitor en vivo** tab connects directly to NASA when the app opens:
-- **NASA POWER** daily rainfall (PRECTOTCORR), temperature (T2M) and solar radiation (ALLSKY_SFC_SW_DWN) at the Apacheta peatland;
-- **NASA CMR** catalog of the latest NISAR GCOV passes over the area (and the next expected pass, every 12 days).
-A daily water-balance model (Makkink evapotranspiration at 4,210 m, groundwater inflow, drainage) estimates the
-active-layer water reserve and is nudged to NISAR wetness whenever processed NISAR data are loaded.
-A GitHub Action (`.github/workflows/actualizar_datos.yml`) refreshes `datos/monitor.json` every day, so the
-monitor also works offline or if a live request fails. Run it manually from **Actions → Actualizar datos NASA → Run workflow**.
-
-## Preview locally (Windows)
-Double-click `VER_APP_LOCAL.bat`: it starts a local server and opens http://localhost:8000.
-
-## Private test on a phone (before publishing)
-Double-click `PROBAR_PRIVADO_CELULAR.bat`: it serves the app locally and opens a temporary HTTPS
-Cloudflare Quick Tunnel protected by e-mail one-time PIN (`--allowed-mail`). Only the listed e-mails can open it.
+A GitHub Action (`.github/workflows/actualizar_datos.yml`) refreshes `datos/monitor.json` daily for the pilot site,
+so the monitor also works offline. Another Action (`procesar_nisar.yml`) downloads and processes NISAR in the cloud.
 
 ## Install on a phone (no Google Play / App Store)
 YAKU is a Progressive Web App (PWA): it installs from the browser and works offline after the first visit.
-- **Android (Chrome):** open the GitHub Pages link → tap **"📲 Instalar app"** (or menu ⋮ → *Install app*).
-- **iPhone (Safari):** open the link → **Share** → **Add to Home Screen**.
-- To show real data on phones, put `yaku_cachi.json` (from option 4 of `Yaku_v05.py`) in the `datos/` folder.
+Tap **📲 Install app** in the app for step-by-step help and a QR code.
+- **Android (Chrome):** open the link → **Install app** (or menu ⋮ → *Install app*).
+- **iPhone / iPad (Safari):** open the link → **Share** → **Add to Home Screen**.
+- **Computer (Chrome / Edge):** install icon in the address bar.
 
-## Run it
+## Run the processing tool
 ```
-python Yaku_v05.py          # interactive menu: 1 test, 2 list, 3 download, 4 process, 5 area
+python Yaku_v06.py          # interactive menu: 1 test, 2 list, 3 download, 4 process, 5 area
 ```
 Missing Python libraries are installed automatically (Python 3.12 or 3.13 recommended).
 Downloading needs a free NASA Earthdata token (https://urs.earthdata.nasa.gov → Generate Token).
-**Never commit `.earthdata_token`** (already in `.gitignore`).
+**Never commit `.earthdata_token`** (it is listed in `.gitignore`).
+Put the `yaku_<area>.json` produced by option 4 in `datos/` and the app loads it automatically.
 
 ## Data
 - NASA–ISRO NISAR L2 GCOV (PROVISIONAL), ASF DAAC – https://search.asf.alaska.edu/#/?dataset=NISAR
+- NASA POWER – https://power.larc.nasa.gov/ · NASA CMR – https://cmr.earthdata.nasa.gov/
 - Copernicus DEM GLO-30 (ESA) – https://registry.opendata.aws/copernicus-dem/
-- Peatland inventory of the upper Cachi basin, 2013 – https://repositorioslatinoamericanos.uchile.cl/handle/2250/6587904
+- Pilot-site reference: peatland inventory of the upper Cachi basin, 2013 – https://repositorioslatinoamericanos.uchile.cl/handle/2250/6587904
 
-## Use of Super Intelligence (SI)
-Code, figures (generated by SI-assisted plotting code) and text drafts were produced with the assistance of
-**Claude (Anthropic)** and were reviewed, tested and edited by team HIDROTECH. The demo screenshots show a
-synthetic demonstration scene included in the app.
+## Use of AI
+Code and text drafts were produced with the assistance of **Claude (Anthropic)** and were reviewed, tested and
+edited by team YAKU – HIDROTECH. All diagrams in the app are drawn as code (SVG); no AI-generated images.
+The demo scene in the app is synthetic.
 
 ## License
 MIT

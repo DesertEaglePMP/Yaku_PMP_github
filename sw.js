@@ -1,6 +1,6 @@
 /* YAKU · service worker: la app funciona sin internet después de la primera visita.
-   SI disclosure: code generated with assistance of Claude (Anthropic); reviewed by team HIDROTECH. */
-const VERSION = "yaku-v3";
+   SI disclosure: code generated with assistance of Claude (Anthropic); reviewed by team YAKU – HIDROTECH. */
+const VERSION = "yaku-v6";
 const NUCLEO = ["./", "./index.html", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/maskable-192.png", "./icons/maskable-512.png",
   "./icons/apple-touch-icon.png", "./icons/favicon-32.png"];

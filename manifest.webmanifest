@@ -1,19 +1,73 @@
 {
-  "name": "YAKU · Agua de los bofedales (NISAR)",
+  "id": "./",
+  "name": "YAKU · Mountain wetland water (NISAR)",
   "short_name": "YAKU",
-  "description": "Monitoreo del agua almacenada en los bofedales altoandinos con el radar NISAR de NASA–ISRO. Equipo HIDROTECH.",
-  "lang": "es",
-  "start_url": "./index.html",
+  "description": "Measure and monitor the water stored in high-Andean and mountain wetlands with NASA–ISRO NISAR radar. Team YAKU – HIDROTECH.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "./index.html#explorar",
   "scope": "./",
   "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "any",
-  "background_color": "#f4f3ef",
-  "theme_color": "#0d5c63",
-  "categories": ["education", "utilities", "weather"],
+  "background_color": "#f2f8f7",
+  "theme_color": "#0e7c86",
+  "categories": [
+    "education",
+    "utilities",
+    "weather"
+  ],
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Wetland map",
+      "short_name": "Map",
+      "url": "./index.html#explorar",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Live monitor",
+      "short_name": "Monitor",
+      "url": "./index.html#monitor",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }
