@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>YAKU · Mountain wetland water seen by NISAR</title>
-<meta name="author" content="YAKU – HIDROTECH">
-<meta name="version" content="6">
+<title>YAKU App · Mountain wetland water seen by NISAR</title>
+<meta name="author" content="YAKU – HIDROTECH · Jaime Joseph Mañuico Mendoza (CEO) · Noemi Justina Tomaylla Berrocal (Project Manager)">
+<meta name="version" content="7">
 <meta name="description" content="YAKU: monitoreo del agua almacenada en los bofedales altoandinos con el radar NASA-ISRO NISAR. / Water stored in high-Andean wetlands, measured with NASA-ISRO NISAR radar.">
 <meta name="theme-color" content="#0e7c86">
 <meta name="mobile-web-app-capable" content="yes">
@@ -67,6 +67,12 @@ section.view.on{display:block}
 .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.g5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+@media (max-width:1180px){.g5{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:760px){.g5{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.g5{grid-template-columns:1fr}}
+.tier.feat.prem{border-color:#c27f00;background:linear-gradient(180deg,#fffaf0,#fff)}
+.tier.feat.prem::after{background:linear-gradient(90deg,#f2a516,#c27f00)}
 @media (max-width:1050px){.grid{grid-template-columns:1fr}.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:1fr 1fr}}
 @media (max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
@@ -95,6 +101,7 @@ section.view.on{display:block}
 .prose p,.prose li{color:var(--text-2)}
 .prose b{color:var(--text)}
 
+.kind{display:inline-block;vertical-align:4px;font:700 11px Inter,sans-serif;letter-spacing:.1em;color:#fff;background:linear-gradient(90deg,#0e7c86,#2563eb);padding:3px 8px;border-radius:999px}
 /* ---------- site bar ---------- */
 .sitebar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:linear-gradient(120deg,#ffffff,#eefaf7 60%,#e9f2ff);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px 18px;margin-bottom:16px}
 .sitebar h2{font-size:21px;margin:1px 0 2px;overflow-wrap:anywhere}
@@ -253,7 +260,10 @@ th{color:var(--text-2);font-weight:600;font-size:12px;background:var(--surface-2
 .canvas .b.half{grid-column:span 2}
 .canvas .b.wide{grid-column:span 3}
 @media (max-width:900px){.canvas{grid-template-columns:1fr 1fr}.canvas .b.tall{grid-row:auto}.canvas .b.half,.canvas .b.wide{grid-column:span 2}}
-.fin input{width:86px;font:inherit;font-size:12.5px;padding:3px 5px;border:1px solid var(--line);border-radius:6px;text-align:right;font-variant-numeric:tabular-nums}
+.fin td:first-child{white-space:normal;min-width:150px}
+.kpis.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){.kpis.k4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.fin input{width:74px;font:inherit;font-size:12.5px;padding:3px 5px;border:1px solid var(--line);border-radius:6px;text-align:right;font-variant-numeric:tabular-nums}
 .fin td.lbl{color:var(--text-2)}
 .fin tr.tot td{font-weight:700;border-top:2px solid var(--line)}
 .neg{color:var(--lost)}.pos{color:#0b7a53}
@@ -359,7 +369,7 @@ footer .fl{display:flex;gap:18px;flex-wrap:wrap;justify-content:space-between}
       <path d="M6 30 L15 18 L21 25 L28 13 L38 30 Z" fill="#fff" opacity=".92"/>
       <path d="M22 26c-3 4-4 6-4 7.5a4 4 0 0 0 8 0c0-1.5-1-3.5-4-7.5z" fill="#2b7de9" stroke="#fff" stroke-width="1.2"/>
     </svg>
-    <div><h1>YAKU</h1><p><span lang="es">Agua de bofedales de montaña, medida con el radar NISAR</span><span lang="en">Mountain wetland water, measured with NISAR radar</span></p></div>
+    <div><h1>YAKU <span class="kind">APP</span></h1><p><span lang="es">Agua de bofedales de montaña, medida con el radar NISAR</span><span lang="en">Mountain wetland water, measured with NISAR radar</span></p></div>
   </a>
   <div class="hdr-r">
     <span class="pill" id="badge"></span>
@@ -422,6 +432,7 @@ footer .fl{display:flex;gap:18px;flex-wrap:wrap;justify-content:space-between}
         <a class="btn pri" href="#explorar"><svg width="16" height="16"><use href="#i-map"/></svg><span lang="es">Explorar el mapa</span><span lang="en">Explore the map</span></a>
         <a class="btn" href="#monitor"><svg width="16" height="16"><use href="#i-pulse"/></svg><span lang="es">Monitor en vivo</span><span lang="en">Live monitor</span></a>
         <button class="btn" type="button" data-install>📲 <span lang="es">Instalar en el celular</span><span lang="en">Install on your phone</span></button>
+        <a class="btn" href="https://deserteaglepmp.github.io/">🌐 <span lang="es">Ver la página YAKU Web</span><span lang="en">Visit the YAKU Web site</span></a>
       </div>
     </div>
     <div class="diagram" id="heroArt"></div>
@@ -785,19 +796,22 @@ footer .fl{display:flex;gap:18px;flex-wrap:wrap;justify-content:space-between}
     <p lang="es">Como los datos de la NASA son abiertos y el procesamiento corre en la nube, el costo marginal por bofedal es casi cero. Los planes pagados de empresas e instituciones financian el acceso gratuito de comunidades e investigadores (subsidio cruzado).</p>
     <p lang="en">Because NASA data is open and processing runs in the cloud, the marginal cost per wetland is close to zero. Paid plans for companies and institutions fund free access for communities and researchers (cross-subsidy).</p>
   </div>
-  <div class="g4">
+  <div class="g5">
     <div class="card tier"><div class="ic g"><svg><use href="#i-people"/></svg></div><h4><span lang="es">Comunidad</span><span lang="en">Community</span></h4><div class="price"><span lang="es">Gratis</span><span lang="en">Free</span></div>
       <ul lang="es"><li>Semáforo y monitor diario</li><li>App sin conexión</li><li>Reporte PDF</li><li>Capacitación con ARSET (ES)</li></ul>
       <ul lang="en"><li>Traffic light and daily monitor</li><li>Offline app</li><li>PDF report</li><li>Training with ARSET (Spanish)</li></ul></div>
     <div class="card tier"><div class="ic v"><svg><use href="#i-lab"/></svg></div><h4><span lang="es">Investigación</span><span lang="en">Research</span></h4><div class="price"><span lang="es">Gratis</span><span lang="en">Free</span><small> · <span lang="es">código abierto</span><span lang="en">open source</span></small></div>
       <ul lang="es"><li>Código Python y JSON</li><li>Parámetros ajustables</li><li>Exportar CSV</li><li>Co-autoría en validaciones</li></ul>
       <ul lang="en"><li>Python code and JSON</li><li>Tunable parameters</li><li>CSV export</li><li>Co-authorship in validation</li></ul></div>
-    <div class="card tier feat" data-badge="B2G"><div class="ic b"><svg><use href="#i-gov"/></svg></div><h4><span lang="es">Institucional</span><span lang="en">Institutional</span></h4><div class="price">US$ 8 000<small> / <span lang="es">año</span><span lang="en">year</span></small></div>
+    <div class="card tier feat" data-badge="B2G"><div class="ic b"><svg><use href="#i-gov"/></svg></div><h4><span lang="es">Institucional</span><span lang="en">Institutional</span></h4><div class="price">US$ 5 000<small> / <span lang="es">año</span><span lang="en">year</span></small></div>
       <ul lang="es"><li>Gobiernos regionales, empresas de agua, autoridades del agua</li><li>Varias cuencas y alertas</li><li>Reportes trimestrales</li><li>Soporte y capacitación</li></ul>
-      <ul lang="en"><li>Regional governments, water utilities, water authority, MERESE</li><li>Several basins and alerts</li><li>Quarterly reports</li><li>Support and training</li></ul></div>
-    <div class="card tier feat" data-badge="B2B"><div class="ic y"><svg><use href="#i-mine"/></svg></div><h4><span lang="es">Empresarial / Minería</span><span lang="en">Enterprise / Mining</span></h4><div class="price">US$ 24 000<small> / <span lang="es">año</span><span lang="en">year</span></small></div>
-      <ul lang="es"><li>Polígono del proyecto y bofedales de control</li><li>Línea base y monitoreo cada 12 días</li><li>Informes para fiscalización</li><li>Calibración en campo (adicional)</li></ul>
-      <ul lang="en"><li>Project polygon and control wetlands</li><li>Baseline and 12-day monitoring</li><li>Reports for regulators</li><li>Field calibration (add-on)</li></ul></div>
+      <ul lang="en"><li>Regional governments, water utilities, water authorities</li><li>Several basins and alerts</li><li>Quarterly reports</li><li>Support and training</li></ul></div>
+    <div class="card tier feat" data-badge="B2B"><div class="ic y"><svg><use href="#i-mine"/></svg></div><h4><span lang="es">Minería</span><span lang="en">Mining</span></h4><div class="price">US$ 15 000<small> / <span lang="es">año</span><span lang="en">year</span></small></div>
+      <ul lang="es"><li>Polígono del proyecto y bofedales de control</li><li>Línea base y monitoreo cada 12 días</li><li>Informes trimestrales para fiscalización</li><li>Calibración en campo (adicional)</li></ul>
+      <ul lang="en"><li>Project polygon and control wetlands</li><li>Baseline and 12-day monitoring</li><li>Quarterly reports for regulators</li><li>Field calibration (add-on)</li></ul></div>
+    <div class="card tier feat prem" data-badge="PREMIUM"><div class="ic y"><svg><use href="#i-mine"/></svg></div><h4><span lang="es">Minería Premium</span><span lang="en">Mining Premium</span></h4><div class="price">US$ 20 000<small> / <span lang="es">año</span><span lang="en">year</span></small></div>
+      <ul lang="es"><li>Todo lo del plan Minería</li><li><b>Calibración en campo incluida</b> (1 campaña al año)</li><li>Alertas a medida e informes mensuales</li><li>Soporte prioritario y capacitación del personal</li></ul>
+      <ul lang="en"><li>Everything in the Mining plan</li><li><b>Field calibration included</b> (1 campaign per year)</li><li>Custom alerts and monthly reports</li><li>Priority support and staff training</li></ul></div>
   </div>
 
   <div class="sec-h"><h2 style="font-size:21px"><span lang="es">Lienzo del modelo de negocio</span><span lang="en">Business model canvas</span></h2></div>
@@ -809,10 +823,48 @@ footer .fl{display:flex;gap:18px;flex-wrap:wrap;justify-content:space-between}
     <div class="b tall"><h4><span lang="es">Segmentos</span><span lang="en">Segments</span></h4><span lang="es">Entidades públicas, mineras, empresas de agua, investigadores, comunidades y juntas de usuarios.</span><span lang="en">Public agencies, mining companies, water utilities, researchers, communities and water-user boards.</span></div>
     <div class="b"><h4><span lang="es">Recursos clave</span><span lang="en">Key resources</span></h4><span lang="es">Datos abiertos NISAR y NASA POWER, código Python, equipo técnico, GitHub.</span><span lang="en">Open NISAR and NASA POWER data, Python code, technical team, GitHub.</span></div>
     <div class="b"><h4><span lang="es">Canales</span><span lang="en">Channels</span></h4><span lang="es">App web instalable, reportes PDF, convenios institucionales.</span><span lang="en">Installable web app, PDF reports, institutional agreements.</span></div>
-    <div class="b half"><h4><span lang="es">Estructura de costos</span><span lang="en">Cost structure</span></h4><span lang="es">Personal técnico, campañas de calibración en campo, nube (bajo), comercialización. Datos: US$ 0.</span><span lang="en">Technical staff, field calibration campaigns, cloud (low), sales. Data: US$ 0.</span></div>
+    <div class="b half"><h4><span lang="es">Estructura de costos</span><span lang="en">Cost structure</span></h4><span lang="es">Solo costos reales mínimos: equipo a medio tiempo, calibración de bajo costo en campo, talleres y gestión. Datos, nube, hosting y software: US$ 0.</span><span lang="en">Only minimal real costs: part-time team, low-cost field calibration, workshops and admin. Data, cloud, hosting and software: US$ 0.</span></div>
     <div class="b wide"><h4><span lang="es">Fuentes de ingresos</span><span lang="en">Revenue streams</span></h4><span lang="es">Suscripciones institucionales y empresariales, servicios (calibración, capacitación, informes a medida), fondos de cooperación e innovación.</span><span lang="en">Institutional and enterprise subscriptions, services (calibration, training, custom reports), cooperation and innovation grants.</span></div>
   </div>
 
+  <div class="sec-h"><h2 style="font-size:21px"><span lang="es">Estructura de costos optimizada (lean)</span><span lang="en">Optimized (lean) cost structure</span></h2>
+    <p lang="es">Usamos solo recursos abiertos y planes gratuitos, de modo que el gasto se concentra en personas y en el trabajo de campo.</p>
+    <p lang="en">We use only open resources and free plans, so spending goes only to people and fieldwork.</p></div>
+  <div class="kpis k4" id="costKpis" style="margin-bottom:16px"></div>
+  <div class="g2">
+    <div class="card">
+      <h3><div class="ic g"><svg><use href="#i-leaf"/></svg></div><span lang="es">Costos eliminados: US$ 0</span><span lang="en">Eliminated costs: US$ 0</span></h3>
+      <table style="margin-top:6px">
+        <tr><th><span lang="es">Recurso</span><span lang="en">Resource</span></th><th style="text-align:left"><span lang="es">Cómo lo obtenemos</span><span lang="en">How we get it</span></th><th>US$/<span lang="es">año</span><span lang="en">yr</span></th></tr>
+        <tr><td><span lang="es">Imágenes de radar NISAR</span><span lang="en">NISAR radar images</span></td><td style="text-align:left"><span lang="es">Datos abiertos NASA–ISRO (ASF)</span><span lang="en">Open NASA–ISRO data (ASF)</span></td><td>0</td></tr>
+        <tr><td><span lang="es">Clima diario</span><span lang="en">Daily climate</span></td><td style="text-align:left">NASA POWER</td><td>0</td></tr>
+        <tr><td><span lang="es">Altitud y pendiente</span><span lang="en">Elevation &amp; slope</span></td><td style="text-align:left">Copernicus DEM (AWS Open Data)</td><td>0</td></tr>
+        <tr><td><span lang="es">Procesamiento en la nube</span><span lang="en">Cloud processing</span></td><td style="text-align:left"><span lang="es">GitHub Actions (repositorio público)</span><span lang="en">GitHub Actions (public repository)</span></td><td>0</td></tr>
+        <tr><td><span lang="es">Publicación de la app y la web</span><span lang="en">App &amp; website hosting</span></td><td style="text-align:left"><span lang="es">GitHub Pages, Vercel, Netlify, Cloudflare (planes gratuitos)</span><span lang="en">GitHub Pages, Vercel, Netlify, Cloudflare (free plans)</span></td><td>0</td></tr>
+        <tr><td><span lang="es">Software</span><span lang="en">Software</span></td><td style="text-align:left"><span lang="es">Python y librerías de código abierto, QGIS</span><span lang="en">Python and open-source libraries, QGIS</span></td><td>0</td></tr>
+        <tr><td><span lang="es">App en celulares</span><span lang="en">Phone app</span></td><td style="text-align:left"><span lang="es">App web instalable: sin tiendas de apps</span><span lang="en">Installable web app: no app-store fees</span></td><td>0</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3><div class="ic y"><svg><use href="#i-coin"/></svg></div><span lang="es">Cómo reducimos los costos reales</span><span lang="en">How we cut the real costs</span></h3>
+      <ul lang="es" style="margin:6px 0 0;padding-left:18px;color:var(--text-2);font-size:13.5px">
+        <li><b>Equipo pequeño a medio tiempo</b> que crece solo cuando hay clientes.</li>
+        <li><b>Piezómetros de PVC</b> hechos por el equipo y solo 2 sensores automáticos por sitio.</li>
+        <li><b>Comuneros capacitados</b> leen los piezómetros: menos viajes a 4 000 m.</li>
+        <li><b>Viajes compartidos</b> con universidades y autoridades del agua; tesis de estudiantes para la calibración.</li>
+        <li><b>Talleres en la comunidad</b> en lugar de publicidad pagada.</li>
+        <li><b>Todo es código abierto</b>: sin licencias ni servidores propios.</li>
+      </ul>
+      <ul lang="en" style="margin:6px 0 0;padding-left:18px;color:var(--text-2);font-size:13.5px">
+        <li><b>Small part-time team</b> that grows only when there are clients.</li>
+        <li><b>PVC piezometers</b> built by the team and only 2 automatic loggers per site.</li>
+        <li><b>Trained community members</b> read the piezometers: fewer trips to 4,000 m.</li>
+        <li><b>Shared trips</b> with universities and water authorities; student theses for calibration.</li>
+        <li><b>Community workshops</b> instead of paid advertising.</li>
+        <li><b>Everything is open source</b>: no licences or own servers.</li>
+      </ul>
+    </div>
+  </div>
   <div class="grid" style="margin-top:22px">
     <div class="card">
       <h3><div class="ic y"><svg><use href="#i-coin"/></svg></div><span lang="es">Proyección financiera a 3 años</span><span lang="en">3-year financial projection</span></h3>
@@ -907,9 +959,10 @@ footer .fl{display:flex;gap:18px;flex-wrap:wrap;justify-content:space-between}
 </main>
 
 <footer><div class="fl">
-  <div><b>YAKU v6</b> · NASA Space Apps Challenge 2026 · <span lang="es">Bailando con los SAR</span><span lang="en">Dancing with the SARs</span> · <b>YAKU – HIDROTECH</b></div>
+  <div><b>YAKU App v7</b> · NASA Space Apps Challenge 2026 · <span lang="es">Bailando con los SAR</span><span lang="en">Dancing with the SARs</span> · <b>YAKU – HIDROTECH</b></div>
   <div><span lang="es">Datos: NASA/ISRO NISAR vía ASF DAAC · NASA POWER · Copernicus DEM</span><span lang="en">Data: NASA/ISRO NISAR via ASF DAAC · NASA POWER · Copernicus DEM</span></div>
 </div>
+<div style="margin-top:6px">🌐 <span lang="es">Página de presentación:</span><span lang="en">Presentation website:</span> <a href="https://deserteaglepmp.github.io/">YAKU Web · deserteaglepmp.github.io</a></div>
 <div style="margin-top:6px"><span lang="es">Código desarrollado con asistencia de IA (Claude, Anthropic), revisado y probado por el equipo.</span><span lang="en">Code developed with AI assistance (Claude, Anthropic), reviewed and tested by the team.</span></div></footer>
 
 <script>
@@ -1533,20 +1586,24 @@ function renderTeam(){
     ["i-cog","t",L("Desarrollo de software","Software development"),L("Python, nube (GitHub Actions) y app web","Python, cloud (GitHub Actions) and web app")],
     ["i-people","g",L("Gestión social y comunidades","Social & community engagement"),L("Talleres, lenguaje claro y uso en campo","Workshops, plain language and field use")],
     ["i-coin","y",L("Negocio y proyectos","Business & projects"),L("Modelo de negocio, alianzas y gestión","Business model, partnerships and management")]];
-  $("#teamGrid").innerHTML=roles.map(([i,c,t,s])=>`<div style="display:flex;gap:10px;align-items:flex-start">${ico(i,c)}<div><b style="font-size:13.5px">${t}</b><div class="note">${s}</div></div></div>`).join("");
+  const lead=[["JM","Jaime Joseph Mañuico Mendoza","CEO","linear-gradient(135deg,#0e7c86,#2563eb)"],
+              ["NT","Noemi Justina Tomaylla Berrocal",L("Gerente de Proyectos","Project Manager"),"linear-gradient(135deg,#2563eb,#16a374)"]];
+  $("#teamGrid").innerHTML=lead.map(([i,n,r,g])=>`<div style="display:flex;gap:10px;align-items:center;border:1.5px solid var(--accent);border-radius:14px;padding:10px 12px"><div style="width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 15px 'Space Grotesk',Inter,sans-serif;background:${g};flex:none">${i}</div><div><b style="font-size:14px">${n}</b><div style="color:var(--accent);font-weight:600;font-size:13px">${r}</div></div></div>`).join("")+roles.map(([i,c,t,s])=>`<div style="display:flex;gap:10px;align-items:flex-start">${ico(i,c)}<div><b style="font-size:13.5px">${t}</b><div class="note">${s}</div></div></div>`).join("");
 }
 
 /* ===================== modelo financiero ===================== */
 const YRS=[2027,2028,2029];
 const FIN={
-  ing:[["min",{es:"Clientes minería (n.º)",en:"Mining clients (no.)"},[1,3,6],24000],
-       ["pub",{es:"Clientes institucionales (n.º)",en:"Institutional clients (no.)"},[2,5,10],8000],
-       ["srv",{es:"Servicios: calibración / capacitación (n.º)",en:"Services: calibration / training (no.)"},[3,8,15],3000],
-       ["fon",{es:"Fondos de innovación y cooperación (US$)",en:"Innovation &amp; cooperation grants (US$)"},[40000,30000,20000],1]],
-  cos:[["per",{es:"Personal técnico",en:"Technical staff"},[55000,95000,150000]],
-       ["cam",{es:"Campañas de campo",en:"Field campaigns"},[12000,20000,30000]],
-       ["nub",{es:"Nube y datos (NASA: US$ 0)",en:"Cloud &amp; data (NASA: US$ 0)"},[600,2400,6000]],
-       ["com",{es:"Comercialización",en:"Sales &amp; marketing"},[5000,10000,18000]]],
+  ing:[["pub",{es:"Clientes institucionales (n.º)",en:"Institutional clients (no.)"},[2,4,8],5000],
+       ["min",{es:"Clientes minería (n.º)",en:"Mining clients (no.)"},[0,1,2],15000],
+       ["mpr",{es:"Clientes minería Premium (n.º)",en:"Mining Premium clients (no.)"},[0,1,2],20000],
+       ["srv",{es:"Servicios: calibración / capacitación (n.º)",en:"Services: calibration / training (no.)"},[2,5,10],3000],
+       ["fon",{es:"Fondos de innovación y cooperación (US$)",en:"Innovation &amp; cooperation grants (US$)"},[15000,10000,0],1]],
+  cos:[["per",{es:"Equipo a medio tiempo (CEO, gerencia, 1 técnico)",en:"Part-time team (CEO, management, 1 technician)"},[18000,36000,60000]],
+       ["cam",{es:"Calibración en campo (piezómetros de PVC, 2 sensores, viajes)",en:"Field calibration (PVC piezometers, 2 loggers, trips)"},[3000,5000,8000]],
+       ["com",{es:"Talleres y difusión",en:"Workshops &amp; outreach"},[1000,2500,4000]],
+       ["adm",{es:"Gestión legal, contable y dominio web",en:"Legal, accounting &amp; web domain"},[800,1200,1800]],
+       ["tec",{es:"Tecnología: datos NASA, nube, hosting, software",en:"Technology: NASA data, cloud, hosting, software"},[0,0,0]]],
 };
 function finCalc(){
   const ing=YRS.map((_,y)=>FIN.ing.reduce((s,r)=>s+r[2][y]*r[3],0)), cos=YRS.map((_,y)=>FIN.cos.reduce((s,r)=>s+r[2][y],0));
@@ -1577,6 +1634,13 @@ function finChart(c){
     g+=`<text x="${m.l+i*gw+gw/2}" y="${H-8}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--text-2)">${y}</text>`;});
   $("#finChart").innerHTML=`<div class="leg">${ser.map(s=>`<span><i style="background:${s[1]}"></i>${s[2]}</span>`).join("")}</div><svg viewBox="0 0 ${W} ${H}">${g}</svg>`;
   const be=c.res.findIndex(v=>v>=0);
+  const tec=FIN.cos.find(r=>r[0]==="tec")[2], per=FIN.cos.find(r=>r[0]==="per")[2];
+  $("#costKpis").innerHTML=[
+    [L("Costo total año 1","Total cost, year 1"),"US$ "+nf(c.cos[0],0),"var(--accent)"],
+    [L("Tecnología por año","Technology per year"),"US$ "+nf(Math.max(...tec),0),"var(--bof)"],
+    [L("Equipo / costo total (año 1)","Team / total cost (year 1)"),nf(per[0]/Math.max(c.cos[0],1)*100,0)+" %","var(--sun)"],
+    [L("Margen año 3","Year-3 margin"),(c.ing[2]>0?nf(c.res[2]/c.ing[2]*100,0):"–")+" %","var(--accent-2)"]
+  ].map(([l,v,col])=>`<div class="kpi" style="--kc:${col}"><div><div class="l">${l}</div><div class="v" style="font-size:22px">${v}</div></div></div>`).join("");
   $("#finNote").textContent=be<0?L("Con estos supuestos aún no se alcanza el equilibrio.","With these assumptions break-even is not reached yet."):L(`Con estos supuestos el resultado es positivo desde ${YRS[be]}. Los fondos de cooperación cubren el arranque; las suscripciones sostienen el crecimiento.`,`With these assumptions the result is positive from ${YRS[be]}. Grants cover the start-up; subscriptions sustain growth.`);
 }
 
@@ -1852,7 +1916,7 @@ async function generarReporte(){
     $("#reporte").innerHTML=`
       <div class="cab"><div><h1>YAKU · ${L("Reservas hídricas de bofedales de montaña","Mountain wetland water reserves")}</h1>
         <div>${esc(tNombre(demo?MON.nombre:D.sitio))} ${demo?L("· datos de demostración","· demo data"):""}</div></div>
-        <div class="d">${hoy.toLocaleDateString(loc(),{day:"numeric",month:"long",year:"numeric"})}<br>NASA Space Apps 2026 · YAKU v6 · YAKU – HIDROTECH</div></div>
+        <div class="d">${hoy.toLocaleDateString(loc(),{day:"numeric",month:"long",year:"numeric"})}<br>NASA Space Apps 2026 · YAKU App v7 · YAKU – HIDROTECH</div></div>
       <div class="fila">
         <div><h2>${L("Ubicación","Location")}</h2>
           <div class="mapa"><img src="${ex("World_Imagery","jpg")}" alt="" onerror="this.remove()"><img src="${ex("Reference/World_Boundaries_and_Places","png32")}" alt="" onerror="this.remove()">
@@ -1892,7 +1956,7 @@ $("#btnReporte").addEventListener("click",generarReporte);
 function setLang(l){
   LANG=l; try{localStorage.setItem("yaku_lang2",l);}catch(e){}
   document.documentElement.lang=l;
-  document.title=L("YAKU · Agua de bofedales de montaña vista por NISAR","YAKU · Mountain wetland water seen by NISAR");
+  document.title=L("YAKU App · Agua de bofedales de montaña vista por NISAR","YAKU App · Mountain wetland water seen by NISAR");
   document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.dataset.lng===l));
   $("#btnRepTxt").textContent=L("Reporte PDF","PDF report");
   heroArt(); pipeDiagram(); scatDiagram(); ecoDiagram(); roadmap(); renderAudCards(); renderSolTabs(); renderRes(); renderTeam(); renderFin(); buildParams(); readoutDefault();

@@ -1,17 +1,21 @@
-# YAKU v6 – Measuring the water stored in mountain wetlands with NISAR radar
+# YAKU App v7 – Measuring the water stored in mountain wetlands with NISAR radar
 
 **Team YAKU – HIDROTECH · NASA Space Apps Challenge 2026 · Challenge: "Dancing with SARs" (Earth Science)**
+
+- CEO: Jaime Joseph Mañuico Mendoza
+- Project Manager: Noemi Justina Tomaylla Berrocal
+- Presentation website (YAKU Web): https://deserteaglepmp.github.io
 
 YAKU ("water" in Quechua) uses NASA–ISRO **NISAR** L-band radar to map high-Andean peatlands (*bofedales*)
 and other mountain wetlands, track their wetness through the seasons and estimate how much water they store.
 It works for **any area, region or country**. Pilot site: the headwaters of the Cachi River (Ayacucho, Peru).
 
-- **Live app (installable on any phone, no app store):** https://deserteaglepmp.github.io/Yaku_PMP_github/
+- **YAKU App (installable on any phone, no app store):** https://deserteaglepmp.github.io/Yaku_PMP_github/
 - **Language:** English by default, full Spanish with the **ES** button.
-- **Processing tool:** `Yaku_v06.py` (Windows: double-click `INICIAR_YAKU_v06.bat`)
+- **Processing tool:** `Yaku_v07.py` (Windows: double-click `INICIAR_YAKU_v07.bat`)
 - **Project report (Spanish):** `docs/YAKU_Proyecto_NASA_SpaceApps_2026_v3.docx`
 
-## What's in the app (v6)
+## What's in the app (v7)
 | Tab | What it does |
 |---|---|
 | **Explore map** (opens first) | Layered NISAR map (water & wetland, moisture, false colour, HH, HV), timeline, before/after slider, KPIs, wetland "sponge" diagram, validation against a reference inventory, per-audience guidance |
@@ -20,7 +24,7 @@ It works for **any area, region or country**. Pilot site: the headwaters of the 
 | **About the program** | Problem, solution and 5-step workflow |
 | **Who it's for** | Researchers, public agencies, mining companies, communities & water managers |
 | **How it works** | Data-flow diagram, radar scattering diagram, formulas and caveats |
-| **Business model** | Plans, business model canvas, editable 3-year projection, sustainability and SDGs |
+| **Business model** | Plans, canvas, lean cost structure (technology US$ 0), editable 3-year projection, sustainability and SDGs |
 | **NASA resources** | Every NASA / partner-agency resource and how YAKU uses it |
 | **Team & AI** | Team YAKU – HIDROTECH, roadmap, AI-use statement, sources |
 
@@ -44,7 +48,7 @@ Tap **📲 Install app** in the app for step-by-step help and a QR code.
 
 ## Run the processing tool
 ```
-python Yaku_v06.py          # interactive menu: 1 test, 2 list, 3 download, 4 process, 5 area
+python Yaku_v07.py          # interactive menu: 1 test, 2 list, 3 download, 4 process, 5 area
 ```
 Missing Python libraries are installed automatically (Python 3.12 or 3.13 recommended).
 Downloading needs a free NASA Earthdata token (https://urs.earthdata.nasa.gov → Generate Token).
